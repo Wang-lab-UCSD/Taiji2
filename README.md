@@ -1,18 +1,18 @@
 # Taiji2
 Major update of Taiji with enhanced downstream analysis, featuring:
 
-1. TF’s Edgeweight per locus (I think this is really powerful to understand the neighboring TF effect and visualization)
+- TF’s Edgeweight per locus (I think this is really powerful to understand the neighboring TF effect and visualization)
 
 
-2. TF wave
+- TF wave
 
 
-3. TF-regulatee analysis
-- Script for TF-regulatee edgeweight
-- comparative TF-regulatee landscape and clustering (Ext. Fig. 9 related)
+- TF-regulatee analysis
+  - Script for TF-regulatee edgeweight
+  - comparative TF-regulatee landscape and clustering (Ext. Fig. 9 related)
 
-4. TF-TF interaction visualization. 
-- Script for Fig. 6b.
+- TF-TF interaction visualization. 
+  - Script for Fig. 6b.
 
 
 5. TF community construction and visualization
