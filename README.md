@@ -18,7 +18,8 @@ Major update of Taiji with enhanced downstream analysis, featuring:
  
 - Cell-state specificity analysis
 
-![summary figure](https://github.com/cong-003/Taiji2/blob/main/figures/summary_fig.png)
+<img src="https://github.com/cong-003/Taiji2/blob/main/figures/summary_fig.png" width="400">
+
 
 ## Resources
 - website:
