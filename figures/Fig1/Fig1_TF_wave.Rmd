@@ -1,0 +1,49 @@
+---
+title: "Fig1_TF_wave"
+author: "Cong"
+date: "2024-06-28"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## import packages and functions
+```{r import packages and functions}
+library(data.table)
+library(ggplot2)
+library(ggforce)
+set.seed(42)
+fl.sources <- list.files("../../scripts/utils/", full.names = T)
+tmp <- sapply(fl.sources,source)
+```
+
+## import data
+```{r import data}
+clusterNo <- 7
+Data_normed <- read.csv("pagerank.csv", row.names = 1)
+group_sorted <- read.table('group_file.txt',header = T, row.names = 1)
+group_sorted$oldName <- rownames(group_sorted)
+rownames(group_sorted) <- group_sorted$newName
+wavedf <- data.frame(x = c(1,2,2,3,3,4,4,5,5), 
+                     y = c(3,5,1,3,1,3,0,4,2),
+                     samplename = c("Naive","TE","TexProg","MP","TexInt","TRM","TexTerm","TEM","TCM"),
+                     labelposx = c(1,2,2,3,3,4,4,5,5),
+                     labelposy = c(3,5,1,3,1.4,3,0,4,2)-0.4)
+df2 <- read.csv("cluster_result.csv", row.names = 1)
+```
+
+## generate plots
+
+```{r generate wave files}
+tmp <- lapply(c(1:clusterNo), function(x) outputWave(x, wavedf, df2, Data_normed, group_sorted))
+print(tmp[[1]])
+
+```
+
+## session info
+```{r }
+sessionInfo()
+```
+

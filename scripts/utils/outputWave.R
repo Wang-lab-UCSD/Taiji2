@@ -1,7 +1,10 @@
-outputWave <- function(x, df, df2,
-                       Da = Data_normed,
-                       Group = group_sorted){
-  
+outputWave <- function(x, df, df2, Da, Group){
+  # x: cluster name
+  # df: wave plot layout
+  # df2: clusters of TF result
+  # Da: normalized PageRank score
+  # Group: group of samples 
+
   geneL <- rownames(subset(df2, cluster == x))
   DT <- as.data.table(t(as.matrix(Da[geneL,])))
   DT <- data.table(m = rowMeans(DT))
@@ -19,4 +22,5 @@ outputWave <- function(x, df, df2,
   print(p)
   dev.off()
   writeLines(geneL,paste0("c",x,".txt"))
+  return(p)
 }
