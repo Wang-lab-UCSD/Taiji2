@@ -11,16 +11,16 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## import packages and functions
 ```{r import packages and functions}
-library(data.table)
-library(ggplot2)
-library(ggforce)
-library(dplyr)
+suppressMessages(library(data.table))
+suppressMessages(library(ggplot2))
+suppressMessages(library(ggforce))
+suppressMessages(library(dplyr))
 
-library(clusterProfiler)
-library(org.Mm.eg.db)
-library(enrichplot)
-library(xlsx)
-library(pheatmap)
+suppressMessages(library(clusterProfiler))
+suppressMessages(library(org.Mm.eg.db))
+suppressMessages(library(enrichplot))
+suppressMessages(library(xlsx))
+suppressMessages(library(pheatmap))
 
 set.seed(42)
 fl.sources <- list.files("../../scripts/utils/", full.names = T)
@@ -50,6 +50,8 @@ print(tmp[[1]])
 
 ```
 ## pathway analysis
+You can skip this part if you already have enriched pathways. Running this part may take ~10 min.
+
 ```{r over-representation GO and KEGG terms}
 L <- list.files(path="./", pattern = "c[0-9]+.txt")
 tmp <- lapply(L, gsea)
@@ -61,8 +63,8 @@ df <- read.xlsx("SuppFig4 wave GSEA pathways.xlsx", sheetIndex = 1)
 df2 <- df %>% dplyr::select(wave.cluster, Description, p.adjust) %>%
       tidyr::pivot_wider(names_from = wave.cluster, values_from = p.adjust) %>% as.data.frame() %>% replace(is.na(.), 1) %>%
       tibble::column_to_rownames("Description") 
-head(df)
-head(df2)
+knitr::kable(head(df), caption = "pathways result")
+knitr::kable(head(df2), caption = "data for visualization")
 ```
 
 
@@ -88,8 +90,9 @@ p1 <- pheatmap(dt3, fontsize = 7, show_rownames = T,
 print(p1)
     
 ```
-## save to file
+
 ```{r save to file}
+## save to file
 pdf(paste0("hp_transcriptional_waves_selected_pathway_summary_",cutoff,"_max_hclust_cluster.pdf"))
 print(p1)
 dev.off()

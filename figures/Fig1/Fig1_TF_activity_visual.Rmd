@@ -1,0 +1,138 @@
+---
+title: "visualization of TF activity"
+author: "Cong"
+date: "2024-07-01"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## import packages and functions
+```{r import packages and functions}
+suppressMessages(library(data.table))
+suppressMessages(library(ggplot2))
+suppressMessages(library(dplyr))
+suppressMessages(library(xlsx))
+suppressMessages(library(pheatmap))
+suppressMessages(library(RColorBrewer))
+
+
+set.seed(42)
+fl.sources <- list.files("../../scripts/utils/", full.names = T)
+tmp <- sapply(fl.sources,source)
+```
+
+## set up plot parameters
+```{r plot set-up}
+## annotation file
+group_sorted <- read.csv('group_file_for_heatmap.csv',header = T, row.names = 1)
+mycolors <- list(subsets = c("#A6A6A6", "#FF0000", "#0007F4", "#FFA75C", "#00AAFE", 
+                             "#009051", "#FEB5B5", "#E6CFFF", "#8AAA75"))
+names(mycolors$subsets) <- unique(group_sorted$Group)
+breaksList = seq(-2, 2, by = 0.1)
+
+# function
+get_heatmap <- function(df,...){
+  g2 <- group_sorted[colnames(df),]
+  annotation_col = data.frame(subsets = g2$Group) 
+  rownames(annotation_col) = colnames(df)
+  p1 <- pheatmap(df, 
+                 fontsize = 3, angle_col = 90, 
+                 cellwidth = 4, cellheight = 3,
+                 cluster_cols = F, 
+                 annotation_col = annotation_col,
+                 clustering_distance_cols = 'correlation', 
+                 clustering_distance_rows = 'correlation', 
+                 clustering_method = 'average',
+                 # annotation_row = annotation_row,
+                 breaks = breaksList,
+                 color = colorRampPalette(rev(brewer.pal(n = 7, name = "RdYlBu")))(length(breaksList)),
+                 annotation_names_row = F, annotation_names_col = F,
+                 annotation_colors = mycolors, border_color = NA, ...)
+  return(p1)
+}
+
+```
+
+
+## heatmap visualization for multi-tasker and single-tasker
+Each row represents TF and each column represents sample. The upper color annotation represents the cell type of each sample. Each cell is the PageRank score with red displaying high scores.
+
+```{r import data}
+## import data
+df_multi <- read.xlsx("Extended Data Table 2 _ TF PageRank Scores of Multi versus Single state specific TFs.xlsx", sheetIndex = 1, row.names=T) 
+df_single <- read.xlsx("Extended Data Table 2 _ TF PageRank Scores of Multi versus Single state specific TFs.xlsx", sheetIndex = 2, row.names=T) 
+```
+
+
+```{r get heatmap}
+## get heatmap
+p1 <- get_heatmap(df_multi)
+print(p1)
+```
+
+
+```{r get heatmap}
+p2 <- get_heatmap(df_single, cluster_rows=F)
+print(p2)    
+```
+
+```{r save to file}
+## save to file
+pdf("hp_multitasker.pdf")
+print(p1)
+dev.off()
+
+pdf("hp_singletasker.pdf")
+print(p2)
+dev.off()
+
+```
+## bubble visualization for TRM and TEXterm TFs
+```{r}
+## import data
+df_tex <- read.xlsx("Extended Data Table 3 _ TF PageRank Scores of TRM and TEXterm TFs.xlsx", sheetIndex = 1, row.names=T, startRow = 2)
+df_tex_pr <- df_tex[,1:42]
+df_tex_rna <- df_tex[,43:84]
+
+df_trm <- read.xlsx("Extended Data Table 3 _ TF PageRank Scores of TRM and TEXterm TFs.xlsx", sheetIndex = 2, row.names=T, startRow = 2)
+df_trm_pr <- df_trm[,1:42]
+df_trm_rna <- df_trm[,43:84]
+
+df_both <- read.xlsx("Extended Data Table 3 _ TF PageRank Scores of TRM and TEXterm TFs.xlsx", sheetIndex = 3, row.names=T, startRow = 2) 
+df_both_pr <- df_both[,1:42]
+df_both_rna <- df_both[,43:84]
+
+```
+
+```{r}
+g1 <- bubble(rownames(df_tex), df_tex_rna, df_tex_pr)
+g2 <- bubble(rownames(df_trm), df_trm_rna, df_trm_pr)
+g3 <- bubble(rownames(df_both), df_both_rna, df_both_pr)
+```
+
+
+```{r}
+## save to file
+pdf("bb_TEX_active_34TFs.pdf", width=12, height=8)
+grid.draw(g1)
+dev.off() 
+
+pdf("bb_TRM_active_20TFs.pdf", width=12, height=5)
+grid.draw(g2)
+dev.off() 
+
+pdf("bb_TEX_and_TRM_30TFs.pdf",width=12, height=7)
+grid.draw(g3)
+dev.off() 
+```
+
+
+
+## session info
+```{r }
+sessionInfo()
+```
+
