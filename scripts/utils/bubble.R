@@ -17,6 +17,7 @@ bubble <- function(Tcell,log_exp,rank,
                    angle=90, show.legend=T,
                    bubble.color = c("blue","white","red"),
                    plot.margin=c(4,4.5,0.5,1),med=0.5,
+                   text.size=4,
                    color.title="Normalized rank score"){
   samples <- colnames(rank)
   
@@ -54,49 +55,13 @@ bubble <- function(Tcell,log_exp,rank,
     theme_classic()+theme(plot.margin = unit(plot.margin, "lines"),
                           axis.line = element_blank(),axis.text = element_blank(),
                           axis.ticks = element_blank(),axis.title = element_blank(),
-                          legend.position = "left",legend.title = element_text(size = 6),
-                          legend.text = element_text(size = 6))+
+                          legend.position = "left",legend.title = element_text(size = text.size),
+                          legend.text = element_text(size = text.size))+
     labs(size = "Log expression level",color = color.title)
-  
-  # create annotation layer
-  # if (nrow(log_exp) < ncol(log_exp)){
-  #   for (i in length(Tcell):1)  {
-  #     p <- p + annotation_custom(
-  #       grob = text_grob(label = Tcell[i], hjust = 0, size = 10, rot = 90),
-  #       ymin = length(samples)+0.5,      # Vertical position of the textGrob
-  #       ymax = length(samples)+0.5,
-  #       xmin = i,         # Note: The grobs are positioned outside the plot area
-  #       xmax = i)
-  #   }
-  #   for (i in length(samples):1)  {
-  #     p <- p + annotation_custom(
-  #       grob = text_grob(label = samples[i], hjust = 0, size = 6),
-  #       ymin = i,
-  #       ymax = i,
-  #       xmin = length(Tcell)+0.5,
-  #       xmax = length(Tcell)+0.5)
-  #   }
-  # }else{
-  #   for (i in length(Tcell):1)  {
-  #     p <- p + annotation_custom(
-  #       grob = text_grob(label = Tcell[i], hjust = 0, size = 10),
-  #       ymin = i,      # Vertical position of the textGrob
-  #       ymax = i,
-  #       xmin = length(samples)+0.5,         # Note: The grobs are positioned outside the plot area
-  #       xmax = length(samples)+0.5)
-  #   }
-  #   for (i in length(samples):1)  {
-  #     p <- p + annotation_custom(
-  #       grob = text_grob(label = samples[i], hjust = 0, size = 6, rot = 90),
-  #       ymin = length(Tcell)+0.5,
-  #       ymax = length(Tcell)+0.5,
-  #       xmin = i,
-  #       xmax = i)
-  #   }
-  # }
+
   for (i in length(Tcell):1)  {
     p <- p + annotation_custom(
-      grob = text_grob(label = Tcell[i], hjust = 0, size = 10, face = "italic"),
+      grob = text_grob(label = Tcell[i], hjust = 0, size = text.size, face = "italic"),
       ymin = i,      # Vertical position of the textGrob
       ymax = i,
       xmin = length(samples)+0.5,         # Note: The grobs are positioned outside the plot area
@@ -104,7 +69,7 @@ bubble <- function(Tcell,log_exp,rank,
   }
   for (i in length(samples):1)  {
     p <- p + annotation_custom(
-      grob = text_grob(label = samples[i], hjust = 0, size = 6, rot = angle),
+      grob = text_grob(label = samples[i], hjust = 0, size = text.size, rot = angle),
       ymin = length(Tcell)+0.5,
       ymax = length(Tcell)+0.5,
       xmin = i,
@@ -117,6 +82,5 @@ bubble <- function(Tcell,log_exp,rank,
   # Code to override clipping-----------------------------
   gt <- ggplot_gtable(ggplot_build(p))
   gt$layout$clip[gt$layout$name == "panel"] <- "off"
-  grid.draw(gt)
   return(gt)
 }

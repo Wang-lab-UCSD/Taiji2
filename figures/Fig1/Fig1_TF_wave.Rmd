@@ -56,9 +56,10 @@ tmp <- lapply(c(1:clusterNo), function(x) outputWave(x, wavedf, df2, Data_normed
 print(tmp[[1]])
 
 ```
+
+
 # pathway analysis
 You can skip this part if you already have enriched pathways. Running this part may take ~10 min.
-
 ```{r over-representation GO and KEGG terms}
 # L <- list.files(path="./", pattern = "c[0-9]+.txt")
 # tmp <- lapply(L, gsea)

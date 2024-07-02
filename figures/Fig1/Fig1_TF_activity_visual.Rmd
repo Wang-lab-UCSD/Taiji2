@@ -2,14 +2,21 @@
 title: "visualization of TF activity"
 author: "Cong"
 date: "2024-07-01"
-output: html_document
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    toc_collapsed: true
+    toc_depth: 3
+    number_sections: true
+    theme: lumen
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## import packages and functions
+# import packages and functions
 ```{r import packages and functions}
 suppressMessages(library(data.table))
 suppressMessages(library(ggplot2))
@@ -24,7 +31,7 @@ fl.sources <- list.files("../../scripts/utils/", full.names = T)
 tmp <- sapply(fl.sources,source)
 ```
 
-## set up plot parameters
+# set up plot parameters
 ```{r plot set-up}
 ## annotation file
 group_sorted <- read.csv('group_file_for_heatmap.csv',header = T, row.names = 1)
@@ -34,13 +41,13 @@ names(mycolors$subsets) <- unique(group_sorted$Group)
 breaksList = seq(-2, 2, by = 0.1)
 
 # function
-get_heatmap <- function(df,...){
+get_heatmap <- function(df,size=3,...){
   g2 <- group_sorted[colnames(df),]
   annotation_col = data.frame(subsets = g2$Group) 
   rownames(annotation_col) = colnames(df)
   p1 <- pheatmap(df, 
-                 fontsize = 3, angle_col = 90, 
-                 cellwidth = 4, cellheight = 3,
+                 fontsize = size, angle_col = 90, 
+                 cellwidth = 2*size, cellheight = size,
                  cluster_cols = F, 
                  annotation_col = annotation_col,
                  clustering_distance_cols = 'correlation', 
@@ -57,7 +64,7 @@ get_heatmap <- function(df,...){
 ```
 
 
-## heatmap visualization for multi-tasker and single-tasker
+# heatmap visualization for multi-tasker and single-tasker
 Each row represents TF and each column represents sample. The upper color annotation represents the cell type of each sample. Each cell is the PageRank score with red displaying high scores.
 
 ```{r import data}
@@ -67,14 +74,14 @@ df_single <- read.xlsx("Extended Data Table 2 _ TF PageRank Scores of Multi vers
 ```
 
 
-```{r get heatmap}
+```{r get multi-tasker heatmap, fig.width=5, fig.height=8}
 ## get heatmap
 p1 <- get_heatmap(df_multi)
 print(p1)
 ```
 
 
-```{r get heatmap}
+```{r get single-tasker heatmap, fig.width=5, fig.height=8}
 p2 <- get_heatmap(df_single, cluster_rows=F)
 print(p2)    
 ```
@@ -90,20 +97,23 @@ print(p2)
 dev.off()
 
 ```
-## bubble visualization for TRM and TEXterm TFs
+# bubble visualization for TRM and TEXterm TFs
 ```{r}
 ## import data
 df_tex <- read.xlsx("Extended Data Table 3 _ TF PageRank Scores of TRM and TEXterm TFs.xlsx", sheetIndex = 1, row.names=T, startRow = 2)
-df_tex_pr <- df_tex[,1:42]
-df_tex_rna <- df_tex[,43:84]
+df_tex <- df_tex[,grep('TRM|TexTerm',names(df_tex))]
+df_tex_pr <- df_tex[,1:9]
+df_tex_rna <- df_tex[,10:18]
 
 df_trm <- read.xlsx("Extended Data Table 3 _ TF PageRank Scores of TRM and TEXterm TFs.xlsx", sheetIndex = 2, row.names=T, startRow = 2)
-df_trm_pr <- df_trm[,1:42]
-df_trm_rna <- df_trm[,43:84]
+df_trm <- df_trm[,grep('TRM|TexTerm',names(df_trm))]
+df_trm_pr <- df_trm[,1:9]
+df_trm_rna <- df_trm[,10:18]
 
 df_both <- read.xlsx("Extended Data Table 3 _ TF PageRank Scores of TRM and TEXterm TFs.xlsx", sheetIndex = 3, row.names=T, startRow = 2) 
-df_both_pr <- df_both[,1:42]
-df_both_rna <- df_both[,43:84]
+df_both <- df_both[,grep('TRM|TexTerm',names(df_both))]
+df_both_pr <- df_both[,1:9]
+df_both_rna <- df_both[,10:18]
 
 ```
 
@@ -113,25 +123,39 @@ g2 <- bubble(rownames(df_trm), df_trm_rna, df_trm_pr)
 g3 <- bubble(rownames(df_both), df_both_rna, df_both_pr)
 ```
 
+TFs that most active in TEXterm
+```{r, fig.width=4, fig.height=8}
+plot(g1)
+```
+
+TFs that most active in TRM
+```{r, fig.width=4, fig.height=5}
+plot(g2)
+```
+
+TFs that  active in TRM and TEXterm
+```{r, fig.width=4, fig.height=7}
+plot(g3)
+```
 
 ```{r}
 ## save to file
-pdf("bb_TEX_active_34TFs.pdf", width=12, height=8)
+pdf("bb_TEX_active_34TFs.pdf", width=4, height=8)
 grid.draw(g1)
 dev.off() 
 
-pdf("bb_TRM_active_20TFs.pdf", width=12, height=5)
+pdf("bb_TRM_active_20TFs.pdf", width=4, height=5)
 grid.draw(g2)
 dev.off() 
 
-pdf("bb_TEX_and_TRM_30TFs.pdf",width=12, height=7)
+pdf("bb_TEX_and_TRM_30TFs.pdf",width=4, height=7)
 grid.draw(g3)
 dev.off() 
 ```
 
 
 
-## session info
+# session info
 ```{r }
 sessionInfo()
 ```
