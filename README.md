@@ -18,6 +18,8 @@ Major update of Taiji with enhanced downstream analysis, featuring:
   - Output: Heuristic score
  
 - Cell-state specificity analysis
+  - analysis:
+  - [visual](https://rpubs.com/cong003/1201450 )
 
 <img src="https://github.com/cong-003/Taiji2/blob/main/figures/summary_fig.png" width="800">
 
