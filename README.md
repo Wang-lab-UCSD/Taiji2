@@ -23,7 +23,7 @@ Major update of Taiji with enhanced downstream analysis, featuring:
 
 ## Resources
 - website:
-- tutorial and demo:
+- tutorial and demo: https://github.com/cong-003/Taiji2/blob/main/figures/Fig1/Fig1_TF_wave.html
 - intro of Taiji: https://taiji-pipeline.github.io/ 
 
 ## How to cite
