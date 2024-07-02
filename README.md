@@ -11,6 +11,7 @@ Major update of Taiji with enhanced downstream analysis, featuring:
 - TF transcriptional wave (additional input required).
   - Input: pre-defined differentiation path + Taiji pagerank
   - Output: transcriptional wave patterns
+  - [tutorial](https://htmlpreview.github.io/?https://github.com/cong-003/Taiji2/blob/main/figures/Fig1/Fig1_TF_wave.html)
 
 - Perturb seq integration/heuristic score calculation (additional input required).
   - Input: TF KO DEGs + Taiji edgeweight
@@ -23,7 +24,7 @@ Major update of Taiji with enhanced downstream analysis, featuring:
 
 ## Resources
 - website:
-- tutorial and demo: https://github.com/cong-003/Taiji2/blob/main/figures/Fig1/Fig1_TF_wave.html](https://htmlpreview.github.io/?https://github.com/cong-003/Taiji2/blob/main/figures/Fig1/Fig1_TF_wave.html
+- tutorial and demo: 
 - intro of Taiji: https://taiji-pipeline.github.io/ 
 
 ## How to cite
