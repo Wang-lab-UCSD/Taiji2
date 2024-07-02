@@ -11,13 +11,15 @@ Major update of Taiji with enhanced downstream analysis, featuring:
 - TF transcriptional wave (additional input required).
   - Input: pre-defined differentiation path + Taiji pagerank
   - Output: transcriptional wave patterns
-  - [tutorial](https://htmlpreview.github.io/?https://github.com/cong-003/Taiji2/blob/main/figures/Fig1/Fig1_TF_wave.html)
+  - [tutorial](https://rpubs.com/cong003/1201435)
 
 - Perturb seq integration/heuristic score calculation (additional input required).
   - Input: TF KO DEGs + Taiji edgeweight
   - Output: Heuristic score
  
 - Cell-state specificity analysis
+  - analysis:
+  - [visual](https://rpubs.com/cong003/1201450 )
 
 <img src="https://github.com/cong-003/Taiji2/blob/main/figures/summary_fig.png" width="800">
 
