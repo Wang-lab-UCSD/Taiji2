@@ -2,14 +2,21 @@
 title: "TF transcriptional waves and pathway analysis"
 author: "Cong"
 date: "2024-06-28"
-output: html_document
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    toc_collapsed: true
+    toc_depth: 3
+    number_sections: true
+    theme: lumen
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## import packages and functions
+# import packages and functions
 ```{r import packages and functions}
 suppressMessages(library(data.table))
 suppressMessages(library(ggplot2))
@@ -27,7 +34,7 @@ fl.sources <- list.files("../../scripts/utils/", full.names = T)
 tmp <- sapply(fl.sources,source)
 ```
 
-## import data
+# import data
 ```{r import data}
 clusterNo <- 7
 Data_normed <- read.csv("pagerank.csv", row.names = 1)
@@ -42,29 +49,29 @@ wavedf <- data.frame(x = c(1,2,2,3,3,4,4,5,5),
 df2 <- read.csv("cluster_result.csv", row.names = 1)
 ```
 
-## generate plots
+# generate plots
 
 ```{r generate wave files}
 tmp <- lapply(c(1:clusterNo), function(x) outputWave(x, wavedf, df2, Data_normed, group_sorted))
 print(tmp[[1]])
 
 ```
-## pathway analysis
+# pathway analysis
 You can skip this part if you already have enriched pathways. Running this part may take ~10 min.
 
 ```{r over-representation GO and KEGG terms}
-L <- list.files(path="./", pattern = "c[0-9]+.txt")
-tmp <- lapply(L, gsea)
+# L <- list.files(path="./", pattern = "c[0-9]+.txt")
+# tmp <- lapply(L, gsea)
 
 ```
-## selected pathways visualization
+# selected pathways visualization
 ```{r}
 df <- read.xlsx("SuppFig4 wave GSEA pathways.xlsx", sheetIndex = 1) 
 df2 <- df %>% dplyr::select(wave.cluster, Description, p.adjust) %>%
       tidyr::pivot_wider(names_from = wave.cluster, values_from = p.adjust) %>% as.data.frame() %>% replace(is.na(.), 1) %>%
       tibble::column_to_rownames("Description") 
-knitr::kable(head(df), caption = "pathways result")
-knitr::kable(head(df2), caption = "data for visualization")
+knitr::kable(df[1:6,1:6], caption = "pathways result") |> kableExtra::kable_styling(latex_options = 'scale_down')
+knitr::kable(df2[1:6,1:6], caption = "data for visualization") |> kableExtra::kable_styling(latex_options = 'scale_down')
 ```
 
 
@@ -100,7 +107,7 @@ dev.off()
 ```
 
 
-## session info
+# session info
 ```{r }
 sessionInfo()
 ```
