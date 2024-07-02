@@ -74,83 +74,66 @@ df_single <- read.xlsx("Extended Data Table 2 _ TF PageRank Scores of Multi vers
 ```
 
 
+TFs active in multi-states
 ```{r get multi-tasker heatmap, fig.width=5, fig.height=8}
 ## get heatmap
 p1 <- get_heatmap(df_multi)
-print(p1)
 ```
 
-
+TFs activity enriched in a single state
 ```{r get single-tasker heatmap, fig.width=5, fig.height=8}
 p2 <- get_heatmap(df_single, cluster_rows=F)
-print(p2)    
 ```
 
-```{r save to file}
-## save to file
-pdf("hp_multitasker.pdf")
-print(p1)
-dev.off()
-
-pdf("hp_singletasker.pdf")
-print(p2)
-dev.off()
-
+# heatmap of non-specific TFs
+```{r}
+df <- read.xlsx("Extended Data Table 1 _ TF PageRank Scores of non-specific versus specific TFs.xlsx", sheetIndex = 1, row.names=T)
+get_heatmap(df, cluster_rows=F) 
 ```
+
+
+# heatmap of cell state-specific TFs
+From top to bottom, they're Naive, MP, TE, TCM, TEM, TRM, TexProg, TexInt, and TexTerm.
+```{r}
+dfs <- lapply(2:10, function(x) read.xlsx("Extended Data Table 1 _ TF PageRank Scores of non-specific versus specific TFs.xlsx", sheetIndex = x, row.names=T))
+
+ps <- lapply(1:9, function(x) {
+  annotation_row <- data.frame("subsets"=rep(names(mycolors$subsets)[x],nrow(dfs[[x]])))
+  rownames(annotation_row) <- rownames(dfs[[x]])
+  get_heatmap(df=dfs[[x]], cluster_rows=F, annotation_row=annotation_row) 
+})
+```
+
+
+
 # bubble visualization for TRM and TEXterm TFs
 ```{r}
 ## import data
-df_tex <- read.xlsx("Extended Data Table 3 _ TF PageRank Scores of TRM and TEXterm TFs.xlsx", sheetIndex = 1, row.names=T, startRow = 2)
-df_tex <- df_tex[,grep('TRM|TexTerm',names(df_tex))]
-df_tex_pr <- df_tex[,1:9]
-df_tex_rna <- df_tex[,10:18]
+dfs <- lapply(1:3, function(x) {
+  o <- read.xlsx("Extended Data Table 3 _ TF PageRank Scores of TRM and TEXterm TFs.xlsx", sheetIndex = x, row.names=T, startRow = 2)
+  o <- o[,grep('TRM|TexTerm',names(o))]
+  return(list(o[,1:9], o[,10:18]))
+})
 
-df_trm <- read.xlsx("Extended Data Table 3 _ TF PageRank Scores of TRM and TEXterm TFs.xlsx", sheetIndex = 2, row.names=T, startRow = 2)
-df_trm <- df_trm[,grep('TRM|TexTerm',names(df_trm))]
-df_trm_pr <- df_trm[,1:9]
-df_trm_rna <- df_trm[,10:18]
-
-df_both <- read.xlsx("Extended Data Table 3 _ TF PageRank Scores of TRM and TEXterm TFs.xlsx", sheetIndex = 3, row.names=T, startRow = 2) 
-df_both <- df_both[,grep('TRM|TexTerm',names(df_both))]
-df_both_pr <- df_both[,1:9]
-df_both_rna <- df_both[,10:18]
+# get heatmap
+gs <- lapply(dfs, function(x) bubble(rownames(x[[1]]), x[[2]], x[[1]]))
 
 ```
 
-```{r}
-g1 <- bubble(rownames(df_tex), df_tex_rna, df_tex_pr)
-g2 <- bubble(rownames(df_trm), df_trm_rna, df_trm_pr)
-g3 <- bubble(rownames(df_both), df_both_rna, df_both_pr)
-```
 
 TFs that most active in TEXterm
 ```{r, fig.width=4, fig.height=8}
-plot(g1)
+plot(gs[[1]])
 ```
 
 TFs that most active in TRM
 ```{r, fig.width=4, fig.height=5}
-plot(g2)
+plot(gs[[2]])
 ```
 
 TFs that  active in TRM and TEXterm
 ```{r, fig.width=4, fig.height=7}
-plot(g3)
-```
-
-```{r}
-## save to file
-pdf("bb_TEX_active_34TFs.pdf", width=4, height=8)
-grid.draw(g1)
-dev.off() 
-
-pdf("bb_TRM_active_20TFs.pdf", width=4, height=5)
-grid.draw(g2)
-dev.off() 
-
-pdf("bb_TEX_and_TRM_30TFs.pdf",width=4, height=7)
-grid.draw(g3)
-dev.off() 
+plot(gs[[3]])
 ```
 
 
