@@ -4,6 +4,7 @@ Major update of Taiji with enhanced downstream analysis, featuring:
 - TF’s edgeweight per locus calculation
 
 - TF-regulatee analysis
+  - [differential edge weight analysis](https://rpubs.com/cong003/1201748)
  
 - TF-TF interaction network
   - TF community construction
