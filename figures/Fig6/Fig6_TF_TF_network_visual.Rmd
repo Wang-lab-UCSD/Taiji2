@@ -196,6 +196,63 @@ tmp <- lapply(c('Hic1','Fosb','Zfp324'), get_graph)
 
 ```
 
+# TF-regulatee network 
+```{r}
+# prepare edge info
+df <- read.csv('Hic1_Prdm1_RegulationFlipping_figure_input_20240529-lc.csv')[,c(1:4)] |> na.omit() |> mutate(pair=paste0(regulator,'-',regulatee)) |> dplyr::select(pair, TexTerm, TRM) |> tibble::column_to_rownames('pair')
+
+df <- df |> tibble::rownames_to_column('pair') |> tidyr::separate('pair',into = c('from','to'),sep = '-') |> 
+    tidyr::pivot_longer(!c('from','to'),names_to='group', values_to = 'corr') |> 
+    # mutate(edge.color=ifelse(group=='TexTerm','#7F6000','#009051'), edge.lty=ifelse(corr<0, 1, 2), abs.corr=abs(corr)) |> 
+    mutate(edge.color=ifelse(corr<0, '#C00000', '#0070C0'), abs.corr=abs(corr)) |> 
+    filter(corr!=0)
+knitr::kable(head(df), caption = 'edge meta') |> kableExtra::kable_styling(latex_options = 'scale_down') 
+
+```
+
+```{r}
+# set node color
+nodes <- read.csv('node_color_20240529.csv')
+tex_nodes <- nodes |> filter(color=='#B2876B') |> pull(node) |> unique()
+trm_nodes <- nodes |> filter(color=='#A5D4AF') |> pull(node) |> unique()
+```
+
+
+```{r}
+# define function
+get_TF_regulatee_graph <- function(id){
+  ge <- df |> filter(from==id)
+  g <- graph_from_data_frame(ge, directed = FALSE)
+  
+  edge.width.max <- 10
+  upper.limit <- 50
+  lower.limit <- 5
+  max_corr <- max(E(g)$abs.corr)
+  min_corr <- min(E(g)$abs.corr)
+  valuesq <- lapply(V(g)$name, function(x) ifelse(x %in% tex_nodes, return(c(0,1)), ifelse(x %in% trm_nodes, return(c(1,0)), return(c(1,1)))))
+  V(g)$size <- ifelse(V(g)$name == id, 20, 15)
+  V(g)$pie.color = list(c('#A5D4AF','#B2876B')) # first is TRM, second is TEX
+  V(g)$frame.color = ifelse(V(g)$name %in% tex_nodes, '#B2876B', '#A5D4AF')
+  V(g)[which(V(g)$name==id)]$pie.color = list(c('#808080','#808080'))
+  V(g)[which(V(g)$name==id)]$frame.color = '#808080'
+  
+  E(g)$color <- ge$edge.color
+  # E(g)$width <- 0.5*E(g)$corr
+  E(g)$width <- 0.1*ifelse(E(g)$abs.corr>=upper.limit, upper.limit, ifelse(E(g)$abs.corr<=lower.limit,lower.limit,E(g)$abs.corr))
+  
+  set.seed(1)
+  plot(g, arrow.mode=0, vertex.shape='pie',vertex.label.color='black', vertex.label.cex=1, vertex.pie=valuesq,curved=T)
+}
+
+```
+
+
+```{r, fig.width=6, fig.height=6}
+# generate graph
+tmp <- lapply(c('Hic1','Prdm1'), get_TF_regulatee_graph)
+
+```
+
 
 # session info
 ```{r }
