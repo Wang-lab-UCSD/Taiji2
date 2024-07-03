@@ -1,0 +1,204 @@
+---
+title: "visualization of context-dependent TF-TF cooperation network"
+author: "Cong"
+date: "2024-07-03"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    toc_collapsed: true
+    toc_depth: 3
+    number_sections: true
+    theme: lumen
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# import packages and functions
+```{r import packages and functions}
+suppressMessages(library(igraph))
+suppressMessages(library(ggplot2))
+suppressMessages(library(dplyr))
+suppressMessages(library(RColorBrewer))
+
+```
+
+# load two networks first
+```{r}
+g1 <- readRDS('graph_shrinkage_res0.9_s0.15_TexTerm_subset_TFs_v2.rds')
+g2 <- readRDS('graph_shrinkage_res0.9_s0.15_TRM_subset_TFs_v2.rds')
+gv1 <- igraph::as_data_frame(g1, "vertices")
+gv2 <- igraph::as_data_frame(g2, "vertices")
+
+common_tfs <- intersect(gv1$name, gv2$name)
+tex_tfs <- setdiff(gv1$name, gv2$name)
+trm_tfs <- setdiff(gv2$name, gv1$name)
+
+
+
+```
+
+# combine two networks
+first we prepared the edge info
+```{r}
+# extract edge info: take mean if edge exists in both networks
+ge1 <- igraph::as_data_frame(g1) %>% select(from, to, corr) %>% transform(from=pmin(from, to), to=pmax(from,to))
+ge2 <- igraph::as_data_frame(g2) %>% select(from, to, corr) %>% transform(from=pmin(from, to), to=pmax(from,to))
+ge <- ge1 %>% full_join(ge2, by = c('from','to')) %>% 
+    mutate(corr=ifelse(is.na(corr.x), corr.y, ifelse(is.na(corr.y), corr.x, (corr.x+corr.y)/2)), 
+           edge.color=ifelse(is.na(corr.x), '#009051', ifelse(is.na(corr.y), '#8AAA75', '#808080')),
+           type=ifelse(is.na(corr.x), 'trm', ifelse(is.na(corr.y), 'tex', 'common'))) |> 
+        select(from,to,corr,edge.color,type) |> na.omit()
+knitr::kable(head(ge), caption = 'edge meta') |> kableExtra::kable_styling(latex_options = 'scale_down') 
+```
+
+Then we prepared the node info. Most of the TFs are in the same community in both contexts. Some TFs are different so they will be marked as "multi"
+```{r get node info}
+gv1 <- igraph::as_data_frame(g1, "vertices") %>% select(name, cluster)
+gv2 <- igraph::as_data_frame(g2, "vertices") %>% mutate(cluster2=ifelse(cluster==1, 3, ifelse(cluster==3, 1, cluster)))%>% select(name, cluster2)
+attrs2 <- gv1 %>% full_join(gv2, by=c('name')) %>% 
+        mutate(group=ifelse(name %in% common_tfs, 'Common', ifelse(name %in% tex_tfs, 'Tex', 'Trm')), 
+               color=ifelse(name %in% common_tfs, '#C0C0C0', ifelse(name %in% tex_tfs, '#BB8666', '#98D7AD')),
+               cluster_c=ifelse(is.na(cluster),cluster2,ifelse(is.na(cluster2), cluster,ifelse(cluster==cluster2, cluster, 'mixed'))))
+knitr::kable(head(attrs2), caption = 'node meta') |> kableExtra::kable_styling(latex_options = 'scale_down') 
+
+```
+
+
+```{r create combined network}
+# create combined network from the edge meta
+g <- graph_from_data_frame(ge, directed = FALSE, vertices = attrs2)
+print(g, e=TRUE, v=TRUE)
+```
+
+# network visualization
+## fix the network layout
+```{r}
+G_Grouped = g
+E(G_Grouped)$weight = 1
+
+## Add edges with high weight between all nodes in the same group
+for(i in unique(V(g)$cluster_c)) {
+    GroupV = which(V(g)$cluster_c == i)
+    G_Grouped = add_edges(G_Grouped, combn(GroupV, 2), attr=list(weight=1.8))
+} 
+
+## Now create a layout based on G_Grouped
+set.seed(567)
+LO = layout_with_fr(G_Grouped)
+```
+
+## define function
+```{r}
+# function to generate network
+get_figure <- function(x,ge,cut_off=0.8,label=F){
+    g <- graph_from_data_frame(ge, directed = FALSE, vertices = attrs2)
+    G_Grouped = g
+    E(G_Grouped)$weight = 1
+    
+    ## Add edges with high weight between all nodes in the same group
+    for(i in unique(V(g)$cluster_c)) {
+        GroupV = which(V(g)$cluster_c == i)
+        G_Grouped = add_edges(G_Grouped, combn(GroupV, 2), attr=list(weight=1.8))
+    } 
+    
+    ## Now create a layout based on G_Grouped
+    set.seed(567)
+    LO = layout_with_fr(G_Grouped)
+    
+    # get degree
+    ge2 <- ge |> dplyr::filter(type==x)
+    g2 <- graph_from_data_frame(ge2, directed = FALSE, vertices = attrs2) # to get customized node size in each context
+    # generate label for all nodes
+    V(g)$frame.color <- 'gray'
+    V(g)$label <- NA
+    if (label){V(g)$label <- V(g)$name}
+    
+    V(g)$label.color <- 'black'
+    V(g)$size <- 0.2*degree(g2) # degree in each context
+    # V(g)$label.cex <- 0.75 # part label
+    V(g)$label.cex <- 0.5 # all label
+    
+    # set distance of label
+    V(g)$label.dist <- 0.4
+    
+    # set edge color
+    # E(g)$color <- "gray80"
+    E(g)$color <- ifelse(E(g)$type=='common', '#C0C0C0', ifelse(E(g)$type=='trm', '#009051', '#945200'))
+    E(g)$size <- 0.1
+    E(g)$width <- 2*E(g)$corr
+    E(g)$lty <- ifelse((E(g)$corr>=unname(quantile(E(g)$corr, cut_off))) & (E(g)$type==x), 1, 0)
+
+    plot(g, layout=LO, main = paste0(x, ' network'))
+}
+```
+
+## generate figures
+```{r, fig.width=8, fig.height=8}
+tmps <- lapply(c('common','trm','tex'), function(x) get_figure(x=x, ge=ge, cut_off=0.8,label=T))
+
+```
+
+# individual TF's neighbors in different contexts
+```{r}
+# define function
+get_graph <- function(id){
+    ge1 <- igraph::as_data_frame(g1) %>% select(from, to, corr) %>% transform(from=pmin(from, to), to=pmax(from,to)) %>% mutate(edge.color='#7F6000')
+    ge2 <- igraph::as_data_frame(g2) %>% select(from, to, corr) %>% transform(from=pmin(from, to), to=pmax(from,to)) %>% mutate(edge.color='#009051')
+    ge <- rbind(ge1,ge2)
+    
+    ge3 <- ge %>% filter(from == id | to == id)
+    nodes <- union(ge3$from, ge3$to)
+    attrs3 = data.frame('name'=nodes) %>% mutate(color=ifelse(name %in% common_tfs, '#C0C0C0', ifelse(name %in% tex_tfs, '#7F6000', '#009051')))
+
+    g <- graph_from_data_frame(ge3, directed = FALSE, vertices = attrs3)
+    V(g)$label.color <- 'black'
+    # V(g)$size <- 10*degree(g)
+    V(g)$size <- ifelse(V(g)$name == id, 12, 7)
+    # V(g)$label.cex <- 0.75 # part label
+    V(g)$label.cex <- 1 # all label
+
+    # set distance of label
+    V(g)$label.dist <- 1
+
+    # set edge color
+    # E(g)$color <- "gray80"
+    E(g)$color <- ge3$edge.color
+    E(g)$size <- 1
+    E(g)$width <- 3*E(g)$corr
+    G_Grouped = g
+    E(G_Grouped)$weight = 1
+
+    ## make edges of the same type close to each other in the layout
+    for(i in unique(V(g)$color)) {
+        GroupV = which(V(g)$color == i)
+        G_Grouped = add_edges(G_Grouped, combn(GroupV, 2), attr=list(weight=0.1))
+    } 
+
+    ## Now create a layout based on G_Grouped
+    set.seed(567)
+    LO = layout_with_fr(G_Grouped)    
+    
+    set.seed(1)
+    plot(g, layout=LO, main = paste0(id, ' network'))
+
+}
+
+```
+
+Now we can visualize some TFs' neighbors in both TRM and TEXterm. Hic1 is a common TF in both contexts. Zfp324 is TEXterm-specific TF. Fosb is TRM-specific TF. 
+```{r, fig.width=6, fig.height=6}
+# visualize some example TFs
+tmp <- lapply(c('Hic1','Fosb','Zfp324'), get_graph)
+
+
+```
+
+
+# session info
+```{r }
+sessionInfo()
+```
+
