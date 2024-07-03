@@ -7,6 +7,7 @@ Major update of Taiji with enhanced downstream analysis, featuring:
  
 - TF-TF interaction network
   - TF community construction
+  - [visualization tutorial](https://rpubs.com/cong003/1201527)
     
 - TF transcriptional wave (additional input required).
   - Input: pre-defined differentiation path + Taiji pagerank
