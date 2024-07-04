@@ -1,9 +1,11 @@
-enrich_all <- function(x,key=NULL,output_file=NA,is.plot=F,
+enrich_all <- function(x=NULL,gene=NULL,key=NULL,output_file=NA,is.plot=F,
                  show.item=30, go.width=10, pvalue=0.1){
   
   # get genes and gene id -------------------
-  prefix <- gsub(".*/","",gsub(".txt","",x))
-  gene <- readLines(x)
+  if (!is.null(x)){
+    prefix <- gsub(".*/","",gsub(".txt","",x))
+    gene <- readLines(x)
+  }
   tmp <- AnnotationDbi::select(org.Mm.eg.db, gene, "ENTREZID", "SYMBOL") %>% tidyr::drop_na()
   gene.id <- tmp[,2]
   if (is.na(output_file)){

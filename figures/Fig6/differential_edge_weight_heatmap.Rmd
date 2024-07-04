@@ -62,6 +62,11 @@ names(output) = c('gene','kmeans_cluster')
 
 # pathway analysis
 ```{r}
+source("../../scripts/utils/enrich_all.R")
+lapply(unique(output$kmeans_cluster), function(x){
+  gene <- output |> dplyr::filter(kmeans_cluster==x) |> pull(gene)
+  enrich_all(gene = gene, is.plot = F, pvalue = 0.1)
+})
 
 ```
 
