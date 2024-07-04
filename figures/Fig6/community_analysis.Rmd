@@ -1,0 +1,49 @@
+---
+title: "context-dependent TF community analysis"
+author: "Cong"
+date: "2024-07-04"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    toc_collapsed: true
+    toc_depth: 3
+    number_sections: true
+    theme: lumen
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# import packages and functions
+```{r import packages and functions}
+suppressMessages(library(igraph))
+suppressMessages(library(ggplot2))
+suppressMessages(library(dplyr))
+suppressMessages(library(RColorBrewer))
+
+```
+
+# load two networks first
+```{r}
+g1 <- readRDS('graph_shrinkage_res0.9_s0.15_TexTerm_subset_TFs_v2.rds')
+g2 <- readRDS('graph_shrinkage_res0.9_s0.15_TRM_subset_TFs_v2.rds')
+gv1 <- igraph::as_data_frame(g1, "vertices")
+gv2 <- igraph::as_data_frame(g2, "vertices")
+
+common_tfs <- intersect(gv1$name, gv2$name)
+tex_tfs <- setdiff(gv1$name, gv2$name)
+trm_tfs <- setdiff(gv2$name, gv1$name)
+
+
+
+```
+
+
+
+# session info
+```{r }
+sessionInfo()
+```
+

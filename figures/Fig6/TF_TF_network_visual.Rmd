@@ -36,8 +36,6 @@ common_tfs <- intersect(gv1$name, gv2$name)
 tex_tfs <- setdiff(gv1$name, gv2$name)
 trm_tfs <- setdiff(gv2$name, gv1$name)
 
-
-
 ```
 
 # combine two networks

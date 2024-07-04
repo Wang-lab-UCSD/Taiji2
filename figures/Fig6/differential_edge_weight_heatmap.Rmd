@@ -1,0 +1,79 @@
+---
+title: "differential edge weight analysis"
+author: "Cong"
+date: "2024-07-05"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    toc_collapsed: true
+    toc_depth: 3
+    number_sections: true
+    theme: lumen
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# import packages and functions
+```{r import packages and functions}
+suppressMessages(library(pheatmap))
+suppressMessages(library(dplyr))
+suppressMessages(library(RColorBrewer))
+
+```
+
+# load data first
+```{r}
+df_fc <- read.csv('log2FC_btw_TEX_and_TRM_mean_edge_weight_subset_TFs_v2_top500_genes.csv', row.names = 1)
+df_fc = df_fc[apply(df_fc,MARGIN = 1, FUN = function(x) length(unique(x)) > 1),apply(df_fc,MARGIN = 2, FUN = function(x) length(unique(x)) > 1)] # filter out rows and columns with all zeros
+knitr::kable(df_fc[1:6,1:6], caption = 'log2 fold change of edge weight betweeen TEXterm and TRM') |> kableExtra::kable_styling(latex_options = 'scale_down') 
+
+```
+
+# Kmeans clustering
+Following the script of PCA+Kmeans clustering, we selected k as 16
+```{r}
+set.seed(123)
+k = 16
+kmeans_model <- kmeans(df_fc, centers = k)
+```
+
+# plot heatmap
+```{r, fig.width=15, fig.height=5}
+p <- pheatmap::pheatmap(kmeans_model$centers,fontsize=5, cellheight=5, cellwidth=5,
+              show_colnames = T, show_rownames = T, 
+              border_color = NA,
+              cluster_cols = T,
+#               annotation_col = annotation_col, 
+              annotation_colors = mycolors,
+              color = colorRampPalette(rev(brewer.pal(n = 7, name = "BrBG")))(20))
+```
+
+# extract Kmeans member
+```{r}
+output = as.data.frame(kmeans_model$cluster) %>% tibble::rownames_to_column('gene')
+names(output) = c('gene','kmeans_cluster')
+
+# # save to file
+# write.csv(output, 'kmeans_cluster_k_16_log2FC_btw_TEX_and_TRM_mean_edge_weight_top500_subset_TFs_v2_v2_ordered_by_group.csv') 
+```
+
+# pathway analysis
+```{r}
+
+```
+
+
+# pathway visualization
+```{r}
+
+```
+
+
+# session info
+```{r }
+sessionInfo()
+```
+
