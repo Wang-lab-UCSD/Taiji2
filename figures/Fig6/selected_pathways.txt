@@ -1,0 +1,79 @@
+protein polyubiquitination
+activation of GTPase activity
+regulation of Wnt signaling pathway
+regulation of GTPase activity
+positive regulation of cellular catabolic process
+protein targeting
+RNA splicing
+ERAD pathway
+establishment of protein localization to organelle
+nucleus organization
+negative regulation of cellular catabolic process
+symbiotic process
+cell cycle checkpoint
+histone H3 acetylation
+autophagy
+process utilizing autophagic mechanism
+protein deubiquitination
+interferon-gamma production
+positive regulation of T cell activation
+regulation of mononuclear cell proliferation
+HALLMARK_ALLOGRAFT_REJECTION
+lymphocyte apoptotic process
+lymphocyte proliferation
+leukocyte migration
+mononuclear cell proliferation
+regulation of leukocyte migration
+regulation of immune effector process
+positive regulation of cytokine production
+regulation of leukocyte mediated immunity
+regulation of T cell proliferation
+regulation of leukocyte cell-cell adhesion
+positive regulation of leukocyte activation
+regulation of T cell activation
+T cell activation
+leukocyte cell-cell adhesion
+GSE10239_NAIVE_VS_DAY4.5_EFF_CD8_TCELL_DN
+regulation of leukocyte differentiation
+JNK cascade
+positive regulation of phosphatase activity
+GSE22886_NAIVE_CD8_TCELL_VS_MEMORY_TCELL_DN
+GSE15930_NAIVE_VS_24H_IN_VITRO_STIM_IL12_CD8_TCELL_DN
+GSE26495_NAIVE_VS_PD1HIGH_CD8_TCELL_DN
+GSE10239_MEMORY_VS_DAY4.5_EFF_CD8_TCELL_DN
+GSE11057_NAIVE_VS_EFF_MEMORY_CD4_TCELL_DN
+GSE10239_KLRG1INT_VS_KLRG1HIGH_EFF_CD8_TCELL_DN
+actin filament organization
+regulation of protein-containing complex assembly
+regulation of antigen receptor-mediated signaling pathway
+lymphocyte differentiation
+positive regulation of cell adhesion
+KAECH_NAIVE_VS_DAY15_EFF_CD8_TCELL_DN
+GSE15930_STIM_VS_STIM_AND_IL12_48H_CD8_T_CELL_DN
+dephosphorylation
+KAECH_NAIVE_VS_MEMORY_CD8_TCELL_DN
+GSE9650_NAIVE_VS_MEMORY_CD8_TCELL_DN
+positive regulation of catabolic process
+KAECH_NAIVE_VS_DAY8_EFF_CD8_TCELL_DN
+positive regulation of proteolysis
+aromatic compound catabolic process
+cellular carbohydrate metabolic process
+cellular nitrogen compound catabolic process
+GSE9650_EFFECTOR_VS_MEMORY_CD8_TCELL_UP
+GSE30962_ACUTE_VS_CHRONIC_LCMV_SECONDARY_INF_CD8_TCELL_DN
+GSE16522_MEMORY_VS_NAIVE_ANTI_CD3CD28_STIM_CD8_TCELL_UP
+heterocycle catabolic process
+nucleobase-containing compound catabolic process
+protein dephosphorylation
+response to oxidative stress
+covalent chromatin modification
+HALLMARK_MYC_TARGETS_V1
+methylation
+chromosome segregation
+positive regulation of chromosome organization
+histone modification
+positive regulation of transcription of nucleolar large rRNA by RNA polymerase I
+regulation of actin filament-based process
+cell-cell adhesion via plasma-membrane adhesion molecules
+positive regulation of cell cycle
+cell cycle phase transition

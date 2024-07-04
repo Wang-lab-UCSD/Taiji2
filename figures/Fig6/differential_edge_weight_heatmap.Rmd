@@ -28,7 +28,7 @@ suppressMessages(library(RColorBrewer))
 ```{r}
 df_fc <- read.csv('log2FC_btw_TEX_and_TRM_mean_edge_weight_subset_TFs_v2_top500_genes.csv', row.names = 1)
 df_fc = df_fc[apply(df_fc,MARGIN = 1, FUN = function(x) length(unique(x)) > 1),apply(df_fc,MARGIN = 2, FUN = function(x) length(unique(x)) > 1)] # filter out rows and columns with all zeros
-knitr::kable(df_fc[1:6,1:6], caption = 'log2 fold change of edge weight betweeen TEXterm and TRM') |> kableExtra::kable_styling(latex_options = 'scale_down') 
+knitr::kable(df_fc[1:6,1:6], caption = 'log2 fold change of edge weight betweeen TEXterm and TRM') %>% kableExtra::kable_styling(latex_options = 'scale_down') 
 
 ```
 
@@ -61,18 +61,44 @@ names(output) = c('gene','kmeans_cluster')
 ```
 
 # pathway analysis
+This step takes around 20 min to run.
 ```{r}
 source("../../scripts/utils/enrich_all.R")
-lapply(unique(output$kmeans_cluster), function(x){
-  gene <- output |> dplyr::filter(kmeans_cluster==x) |> pull(gene)
-  enrich_all(gene = gene, is.plot = F, pvalue = 0.1)
-})
+source("../../scripts/utils/utils.R")
+
+suppressMessages(library(org.Mm.eg.db))
+suppressMessages(library(clusterProfiler))
+suppressMessages(library(enrichplot))
+
+# lapply(unique(output$kmeans_cluster), function(x){
+#   gene <- output %>% dplyr::filter(kmeans_cluster==x) %>% pull(gene) %>% firstup()
+#   enrich_all(gene = gene, prefix=paste0('k',x),is.plot = F, pvalue = 0.1)
+# })
 
 ```
 
 
-# pathway visualization
-```{r}
+# selected pathway visualization
+
+```{r, fig.width=6, fig.height=6}
+## select genesets for visualization
+df2 <- read.csv('selected_cluster_enrich_pathways_p0.001.csv',row.names = 1, check.names = F)
+annotation_col <- data.frame(clusters=c(7,11,16,3,5,8,9,12,15,2,10,13,1,14,4,6), group=c(rep('TEX',5), rep('TRM',3), rep('mix',8))) %>% tibble::column_to_rownames('clusters')
+mycolors <- list(group = c(brewer.pal(n = 7, name = "BrBG")[1],brewer.pal(n = 7, name = "BrBG")[7],'#808080'))
+names(mycolors$group) <- c('TEX','TRM','mix')
+size <- 5
+p1 <- pheatmap(df2, fontsize = size, show_rownames = T,
+               angle_col = 90, show_colnames = T,
+               cellwidth = 3*size, cellheight = size,
+               cluster_rows = T, cluster_cols = T,
+               clustering_distance_rows = 'correlation',
+               clustering_method = 'average',
+               treeheight_row = size, treeheight_col = size,
+               border_color = NA,
+               annotation_col = annotation_col,
+               annotation_colors = mycolors,
+               color = colorRampPalette(c("#1984c5", "#22a7f0", "#63bff0", "#a7d5ed", "#e2e2e2", "#e1a692", "#de6e56", "#e14b31", "#c23728"))(50)
+)
 
 ```
 

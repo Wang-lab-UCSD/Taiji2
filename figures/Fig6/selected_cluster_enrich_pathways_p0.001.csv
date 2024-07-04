@@ -1,0 +1,80 @@
+"","1","4","5","7","8","10","11","15"
+"cell cycle phase transition",4.05529747758212,0,0,0,0,0,0,0
+"positive regulation of cell cycle",3.78732889068552,0,0,0,0,0,0,0
+"T cell activation",0,6.70339424288956,0,0,0,0,0,5.12306917680349
+"positive regulation of cytokine production",0,5.99580021246117,0,0,0,0,0,0
+"regulation of T cell activation",0,5.06772237262069,0,0,0,0,0,3.30172339572853
+"regulation of leukocyte mediated immunity",0,5.06772237262069,0,0,0,0,0,0
+"regulation of immune effector process",0,5.06772237262069,0,0,0,0,0,0
+"regulation of leukocyte cell-cell adhesion",0,4.99643546346409,0,0,0,0,0,0
+"leukocyte cell-cell adhesion",0,4.9414190606094,0,0,0,0,0,3.67232414617666
+"regulation of leukocyte migration",0,4.65684147810208,0,0,0,0,0,0
+"mononuclear cell proliferation",0,4.0041620027937,0,0,0,0,0,0
+"leukocyte migration",0,4.0041620027937,0,0,0,0,0,0
+"positive regulation of T cell activation",0,3.81242790231362,0,0,0,0,0,0
+"interferon-gamma production",0,3.74688234594215,0,0,0,0,0,0
+"lymphocyte proliferation",0,3.69453930156625,0,0,0,0,0,0
+"positive regulation of leukocyte activation",0,3.5046571769775,0,0,0,0,0,0
+"lymphocyte apoptotic process",0,3.17222523139617,0,0,0,0,0,0
+"regulation of T cell proliferation",0,3.17222523139617,0,0,0,0,0,0
+"regulation of mononuclear cell proliferation",0,3.12378451431571,0,0,0,0,0,0
+"HALLMARK_ALLOGRAFT_REJECTION",0,4.26260580680762,0,0,0,0,0,0
+"protein dephosphorylation",0,0,4.44249994656338,0,0,0,0,0
+"dephosphorylation",0,0,4.44249994656338,0,0,0,0,4.8312812385122
+"response to oxidative stress",0,0,4.11803615830359,0,0,0,0,0
+"nucleobase-containing compound catabolic process",0,0,3.62273211058106,0,0,0,0,0
+"cellular carbohydrate metabolic process",0,0,3.41930506668479,0,0,0,0,0
+"positive regulation of catabolic process",0,0,3.39602450578495,3.04858304189723,0,0,0,0
+"heterocycle catabolic process",0,0,3.35979192175989,0,0,0,0,0
+"cellular nitrogen compound catabolic process",0,0,3.1099534431664,0,0,0,0,0
+"aromatic compound catabolic process",0,0,3.09800624863174,0,0,0,0,0
+"positive regulation of proteolysis",0,0,3.05541264986803,0,0,0,0,0
+"KAECH_NAIVE_VS_DAY8_EFF_CD8_TCELL_DN",0,0,5.60155023279621,0,0,0,0,0
+"KAECH_NAIVE_VS_DAY15_EFF_CD8_TCELL_DN",0,0,4.54567510812572,0,0,0,0,3.31307428595199
+"GSE9650_NAIVE_VS_MEMORY_CD8_TCELL_DN",0,0,4.17704303429851,0,0,0,0,3.70872212984017
+"GSE16522_MEMORY_VS_NAIVE_ANTI_CD3CD28_STIM_CD8_TCELL_UP",0,0,3.49191969699693,0,0,0,0,0
+"KAECH_NAIVE_VS_MEMORY_CD8_TCELL_DN",0,0,3.46110501787096,0,0,0,0,3.37365929878244
+"GSE15930_STIM_VS_STIM_AND_IL12_48H_CD8_T_CELL_DN",0,0,3.29738303174344,0,0,0,0,3.8344229961578
+"GSE9650_EFFECTOR_VS_MEMORY_CD8_TCELL_UP",0,0,3.29738303174344,0,0,0,0,0
+"GSE30962_ACUTE_VS_CHRONIC_LCMV_SECONDARY_INF_CD8_TCELL_DN",0,0,3.21921031875596,0,0,0,0,0
+"protein deubiquitination",0,0,0,6.00785715634922,0,0,5.63140952301687,0
+"ERAD pathway",0,0,0,4.47455750479915,0,0,0,0
+"RNA splicing",0,0,0,4.24594295345628,0,0,0,0
+"protein targeting",0,0,0,3.96062662832971,0,0,0,0
+"protein polyubiquitination",0,0,0,3.35720224872447,0,0,0,0
+"regulation of Wnt signaling pathway",0,0,0,3.10936230966797,0,0,0,0
+"positive regulation of cellular catabolic process",0,0,0,3.07772398366706,0,0,0,0
+"regulation of GTPase activity",0,0,0,3.07772398366706,0,0,0,0
+"activation of GTPase activity",0,0,0,3.04858304189723,0,0,0,0
+"cell-cell adhesion via plasma-membrane adhesion molecules",0,0,0,0,3.13968757014395,0,0,0
+"regulation of actin filament-based process",0,0,0,0,3.09958898362309,0,0,0
+"covalent chromatin modification",0,0,0,0,0,6.438611578159,4.29734334890167,0
+"histone modification",0,0,0,0,0,6.18294852522264,0,0
+"positive regulation of transcription of nucleolar large rRNA by RNA polymerase I",0,0,0,0,0,5.29580552403498,0,0
+"positive regulation of chromosome organization",0,0,0,0,0,4.72903137909863,0,0
+"chromosome segregation",0,0,0,0,0,3.546425128095,0,0
+"methylation",0,0,0,0,0,3.02747515539192,0,0
+"HALLMARK_MYC_TARGETS_V1",0,0,0,0,0,5.5314111867933,0,0
+"autophagy",0,0,0,0,0,0,4.95044159338209,0
+"process utilizing autophagic mechanism",0,0,0,0,0,0,4.95044159338209,0
+"histone H3 acetylation",0,0,0,0,0,0,4.48611789687437,0
+"cell cycle checkpoint",0,0,0,0,0,0,4.08317130448731,0
+"symbiotic process",0,0,0,0,0,0,3.44558692556829,0
+"negative regulation of cellular catabolic process",0,0,0,0,0,0,3.13324202896956,0
+"nucleus organization",0,0,0,0,0,0,3.07594425910377,0
+"establishment of protein localization to organelle",0,0,0,0,0,0,3.05374965055357,0
+"lymphocyte differentiation",0,0,0,0,0,0,0,5.12306917680349
+"positive regulation of cell adhesion",0,0,0,0,0,0,0,4.95108173333512
+"regulation of leukocyte differentiation",0,0,0,0,0,0,0,4.08884021416306
+"regulation of antigen receptor-mediated signaling pathway",0,0,0,0,0,0,0,3.92672063617989
+"regulation of protein-containing complex assembly",0,0,0,0,0,0,0,3.8941778889268
+"actin filament organization",0,0,0,0,0,0,0,3.82416262214542
+"JNK cascade",0,0,0,0,0,0,0,3.27142547670245
+"positive regulation of phosphatase activity",0,0,0,0,0,0,0,3.23572385162876
+"GSE10239_KLRG1INT_VS_KLRG1HIGH_EFF_CD8_TCELL_DN",0,0,0,0,0,0,0,4.18294382001689
+"GSE11057_NAIVE_VS_EFF_MEMORY_CD4_TCELL_DN",0,0,0,0,0,0,0,4.07902050804037
+"GSE10239_MEMORY_VS_DAY4.5_EFF_CD8_TCELL_DN",0,0,0,0,0,0,0,3.79103227594087
+"GSE26495_NAIVE_VS_PD1HIGH_CD8_TCELL_DN",0,0,0,0,0,0,0,3.68535886305852
+"GSE15930_NAIVE_VS_24H_IN_VITRO_STIM_IL12_CD8_TCELL_DN",0,0,0,0,0,0,0,3.13890844924565
+"GSE22886_NAIVE_CD8_TCELL_VS_MEMORY_TCELL_DN",0,0,0,0,0,0,0,3.13890844924565
+"GSE10239_NAIVE_VS_DAY4.5_EFF_CD8_TCELL_DN",0,0,0,0,0,0,0,3.05606950754321

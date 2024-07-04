@@ -1,4 +1,4 @@
-enrich_all <- function(x=NULL,gene=NULL,key=NULL,output_file=NA,is.plot=F,
+enrich_all <- function(x=NULL,gene=NULL,prefix=NULL,key=NULL,output_file=NA,is.plot=F,
                  show.item=30, go.width=10, pvalue=0.1){
   
   # get genes and gene id -------------------
