@@ -38,7 +38,7 @@ gsea <- function(x,key=NULL,output_file=NA,is.plot=F,show.item=30, go.width=10, 
   
   # write result to table
   if (!file.exists(output_file)){
-    xlsx::write.xlsx(o,output_file,row.names = F)
+    xlsx::write.xlsx(o,output_file,sheetName = prefix2)
   }else{
     xlsx::write.xlsx(o,output_file,sheetName = prefix2, row.names = F, append = T)
   }

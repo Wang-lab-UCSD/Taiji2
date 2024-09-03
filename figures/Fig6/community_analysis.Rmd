@@ -1,7 +1,7 @@
 ---
 title: "context-dependent TF community analysis"
 author: "Cong"
-date: "2024-07-04"
+date: "2024-09-03"
 output: 
   html_document:
     toc: true
@@ -22,7 +22,14 @@ suppressMessages(library(igraph))
 suppressMessages(library(ggplot2))
 suppressMessages(library(dplyr))
 suppressMessages(library(RColorBrewer))
+suppressMessages(library(clusterProfiler))
+suppressMessages(library(org.Mm.eg.db))
+suppressMessages(library(enrichplot))
+suppressMessages(library(xlsx))
 
+set.seed(42)
+fl.sources <- list.files("../../scripts/utils/", full.names = T)
+tmp <- sapply(fl.sources,source)
 ```
 
 # load two networks first
@@ -36,10 +43,20 @@ common_tfs <- intersect(gv1$name, gv2$name)
 tex_tfs <- setdiff(gv1$name, gv2$name)
 trm_tfs <- setdiff(gv2$name, gv1$name)
 
-
+```
+# community membership extraction
+```{r}
+lapply(unique(gv1$cluster), function(x) writeLines(gv1[gv1$cluster==x,'name'],paste0('tex_cluster_',x,'.txt')))
+lapply(unique(gv2$cluster), function(x) writeLines(gv2[gv2$cluster==x,'name'],paste0('trm_cluster_',x,'.txt')))
 
 ```
 
+# gsea analysis 
+```{r}
+L <- list.files(path="./", pattern = "cluster_[0-9]+.txt")
+lapply(L, function(x) gsea(x=x, output_file = 'summary_cluster_GO_KEGG.xlsx'))
+
+```
 
 
 # session info

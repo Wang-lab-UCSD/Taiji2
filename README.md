@@ -8,7 +8,8 @@ Major update of Taiji with enhanced downstream analysis, featuring:
  
 - TF-TF interaction network
   - TF community construction
-  - [visualization tutorial](https://rpubs.com/cong003/1201736)
+  - [community visualization](https://rpubs.com/cong003/1201736)
+  - [functional analysis](https://rpubs.com/cong003/1216075)
     
 - TF transcriptional wave (additional input required).
   - Input: pre-defined differentiation path + Taiji pagerank
@@ -21,7 +22,7 @@ Major update of Taiji with enhanced downstream analysis, featuring:
  
 - Cell-state specificity analysis
   - analysis:
-  - [visual](https://rpubs.com/cong003/1201450 )
+  - [visualization](https://rpubs.com/cong003/1201450)
 
 <img src="https://github.com/cong-003/Taiji2/blob/main/figures/summary_fig.png" width="800">
 
