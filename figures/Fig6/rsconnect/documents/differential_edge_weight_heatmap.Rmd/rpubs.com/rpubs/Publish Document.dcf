@@ -1,0 +1,10 @@
+name: Publish Document
+title:
+username:
+account: rpubs
+server: rpubs.com
+hostUrl: rpubs.com
+appId: https://api.rpubs.com/api/v1/document/1201748/fc8117f468314276add01c37d39ed205
+bundleId: https://api.rpubs.com/api/v1/document/1201748/fc8117f468314276add01c37d39ed205
+url: http://rpubs.com/cong003/1201748
+version: 1
