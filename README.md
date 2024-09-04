@@ -7,7 +7,7 @@ Major update of Taiji with enhanced downstream analysis, featuring:
   - [differential edge weight analysis](https://rpubs.com/cong003/1201748)
  
 - TF-TF interaction network
-  - TF community construction
+  - [TF community construction](https://rpubs.com/cong003/1216208)
   - [community visualization](https://rpubs.com/cong003/1201736)
   - [functional analysis](https://rpubs.com/cong003/1216075)
     

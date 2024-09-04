@@ -1,0 +1,260 @@
+---
+title: "context-dependent TF cooperation network construction"
+author: "Cong"
+date: "2024-09-03"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    toc_collapsed: true
+    toc_depth: 3
+    number_sections: true
+    theme: lumen
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# import packages and functions
+
+```{r import packages and functions}
+suppressMessages(library(igraph))
+suppressMessages(library(ggplot2))
+suppressMessages(library(dplyr))
+suppressMessages(library(RColorBrewer))
+suppressMessages(library(huge))
+suppressMessages(library(xlsx))
+
+set.seed(42)
+fl.sources <- list.files("../../scripts/utils/", full.names = T)
+tmp <- sapply(fl.sources,source)
+```
+
+# prepare TF-TF correlation input
+
+Since each context (TRM or TexTerm) has several networks in different replicate samples, we first calculated the mean edge weight of TF-regulatee pair across samples. We kept regulatees with moderate variation across TFs (sd\>1). Then we calculated the spearman correlation of TFs based on the edge weight profile.
+
+-   input: `edge_combined.csv` in each `network/` folder
+-   optional argument: pre-defined TF list, here, we only focus on TFs important in each context
+-   intermediate file: `mean_edge_weight.csv`: rows are regulatees (regulated downstream genes) and columns are TFs
+-   output: `TF_corr.csv`: rows and columns are TFs, symmetric matrix with diagonal as 1.
+
+We'll skip this part for demo purpose. The output file is provided.
+
+```{r}
+# sample <- 'TRM' # 'TRM' or 'TexTerm'
+# tag <- '_subset_TFs_v2'
+# 
+# L <- readLines(paste0(sample,'_samples.txt'))
+# TFs <- readLines(paste0(sample,'_TFs_for_network_v3.txt')) 
+# TFs <- lapply(TFs, toupper)
+#  
+# 
+# edge_weight <- do.call("rbind", lapply(L, function(x) read.table(paste0(x,'/edges_combined.csv'), sep = ",", header = T) %>% select(c(1,2,3)) %>% setNames(c("TF","regulatee","weight")))) %>% dplyr::filter(TF %in% TFs) %>% 
+#                group_by(TF, regulatee) %>% dplyr::summarize(weight = mean(weight, na.rm=TRUE)) %>% 
+#                reshape2::dcast(regulatee ~ TF, value.var = "weight", fill=0) %>% 
+#                tibble::column_to_rownames(var = "regulatee") 
+#                                        
+# df <- edge_weight %>% rowwise() %>% mutate(sd=sd(c_across(everything()))) %>% ungroup() %>% 
+#                 filter(sd>1) %>% select(!matches("MOUSE$|[0-9\\.]{6}$")) %>% select(-sd) %>%
+#                 rename_with(firstup) %>% as.matrix %>% cor(method = "spearman") %>% as.data.frame
+# write.csv(df,file = paste0("TF_corr_",sample,tag,".csv")) # write to file
+```
+
+```{r}
+# load TF-TF correlation file
+sample <- 'TexTerm' ### 'TRM' or 'TexTerm'
+tag <- '_subset_TFs_v2'
+df <- read.csv(paste0("TF_corr_",sample,tag,".csv"), row.names = 1)
+knitr::kable(head(df[,1:6]), caption = 'TF-TF spearman correlation') |> kableExtra::kable_styling(latex_options = 'scale_down')
+print(dim(df))
+```
+
+# copula pipeline to infer graph
+
+We used R package `huge` to construct Gaussian graphical models (GGM) with copula modification. A little bit background to help with selction of hyper-parameters.
+
+GGM assumes that the observations have a multivariate Gaussian distribution with mean $µ$, and covariance matrix $Σ$. The conditional independence can be implied by the inverse covariance (concentration) matrix $Ω = Σ^{−1}$. If $Ω_{jk} = 0$, then the i-th variable and j-th variables are conditional independent given all other variables.
+
+This important property serves as the foundation for GGM to infer direct interactions from high-dimensional data. Unlike relevance networks or correlation networks, in which edges are determined based on marginal correlations, GGM provides a stronger criterion of dependency, and thus further reduces the false positive rate.
+
+However, a great limitation of classic learning methods for GGM is the lack of sparsity in the resulting graph. A dense graph not only complicates downstream analysis but also raises the issue of overfitting the data. Thus it makes sense to impose an $ℓ$ penalty for the estimation of $Ω$, to increase its sparsity, and the sparse pattern of $Ω$ is essentially the same as the adjacency matrix of the underlying undirected graph.
+
+Additionally, [Liu et al.](https://projecteuclid.org/journals/annals-of-statistics/volume-40/issue-4/High-dimensional-semiparametric-Gaussian-copula-graphical-models/10.1214/12-AOS1037.full) developed a data transformation method called Copula that can be used with the graphical Lasso algorithm to relax the normality assumption of GGM. The intuition of Copula is to infer the the relationship of the variables without being influenced by their individual distributions
+
+For more details about package `huge`, check the [vignette](https://cran.r-project.org/web/packages/huge/vignettes/vignette.pdf). For instructions on selecting the hyper-parameters like `npn.func`, check the [manual](https://cran.r-project.org/web/packages/huge/huge.pdf)
+
+```{r}
+npn.func <- 'shrinkage'
+df.npn <- huge.npn(df, npn.func = npn.func) # default                      
+out.npn <- huge(df.npn, method = "glasso", nlambda = 30, lambda.min.ratio = 0.01) # fit glasso model to data
+saveRDS(out.npn,paste0("result_copula_",sample,'_',npn.func,tag,".rds"))
+```
+
+The program automatically sets up a sequence of 30 regularization parameters and estimates the corresponding graph path.
+
+```{r, fig.width=8, fig.height=5}
+# default visualization provided by huge package
+plot(out.npn)
+```
+
+## get precision matrix
+
+From the above plot, we can see the local minimum of sparsity is 0.15. We can infer the precision matrix when sparsity=0.15
+
+```{r}
+sparsity <- 0.15
+idx = which(out.npn$sparsity>=sparsity & out.npn$sparsity<=sparsity+0.01)[1]
+print(paste0("lambda: ", out.npn$lambda[idx]))
+print(paste0("sparsity: ", out.npn$sparsity[idx]))                       
+m = out.npn$icov[[idx]]
+rownames(m) <- rownames(df)
+colnames(m) <- colnames(df)                       
+knitr::kable(head(m[,1:6]), caption = 'sparse TF-TF correlation matrix') |> kableExtra::kable_styling(latex_options = 'scale_down')
+
+## write to file
+write.csv(m, paste0("precision_copula_",sample,"_",npn.func,"_sparsity_",sparsity,tag,".csv"))
+```
+
+# create igraph plot
+
+## create dataframe for igraph
+
+```{r}
+df <- data.frame(row=rownames(m)[row(m)[upper.tri(m)]], 
+                 col=colnames(m)[col(m)[upper.tri(m)]], 
+                 corr=m[upper.tri(m)])
+### remove zero entries
+df <- df[df$corr!=0,]
+knitr::kable(head(df), caption = 'long form of TF correlation') |> kableExtra::kable_styling(latex_options = 'scale_down')
+
+print(dim(df))
+print(paste('percent of correlation score >','0',':',sum(df$corr > 0) *100 / nrow(df),"%"))
+print(paste('percent of correlation score <','0',':',sum(df$corr < 0) *100 / nrow(df),"%"))
+
+df$corr = abs(df$corr)
+write.csv(df, paste0("correlation_intensity_table_copula_",sample,"_",npn.func,"_sparsity_",sparsity,tag,".csv"))
+```
+
+## import node meta
+
+Node annotation came from the results of Fig. S3a.
+
+-   `TRM_Tex`: multi-tasker in both TRM and TexTerm
+-   `Tex_specific`/`TRM_specific`: single-tasker in TexTerm/TRM
+-   `Tex_important`/`TRM_important`: important in TexTerm/TRM
+-   `Housekeeping`: 54 universal TFs with small variation across cell types
+
+```{r}
+nodes <- read.xlsx('TRM_Tex_TF_list_20240121.xlsx', sheetName = sample) %>% tidyr::drop_na(TF) %>% dplyr::mutate(group=ifelse(is.na(Specificity), Important, Specificity)) %>% select(TF, group)
+names(nodes) <- c('name','group')
+knitr::kable(head(nodes), caption = 'node meta') |> kableExtra::kable_styling(latex_options = 'scale_down')
+print(dim(nodes))   
+  
+```
+
+## graph generation
+
+```{r}
+g = graph_from_data_frame(df, directed=FALSE, vertices = nodes)
+print(g, e=TRUE, v=TRUE)
+```
+
+## Leiden clustering
+
+Leiden clustering generates communities. Adjust the `res` to get a reasonable number of groups and high modularity score. High `res` gives more groups. Through experimenting, res=0.9 suits the best.
+
+```{r}
+set.seed(42)
+res <- 0.9
+clustering = cluster_leiden(g, objective_function="modularity",resolution_parameter=res)
+print(clustering)
+print(sizes(clustering))
+print(paste0('modularity:',modularity(g, membership(clustering))))
+saveRDS(clustering,paste0('clustering_copula_',sample,'_',npn.func,'_res',res,'_s',sparsity,tag,'.rds'))
+```
+
+```{r}
+## write clustering result
+clust <- data.frame(name = names(membership(clustering)),cluster = as.numeric(membership(clustering))) %>%
+        dplyr::inner_join(nodes, by = "name") %>%
+        dplyr::arrange(group, cluster)
+knitr::kable(head(clust), caption = 'community clustering') |> kableExtra::kable_styling(latex_options = 'scale_down')
+write.csv(clust,paste0('clustering_membership_copula_',sample,'_',npn.func,'_res',res,'_s',sparsity,tag,'.csv'), row.names=F)
+
+```
+
+## visualization of graph
+We need to set some parameters before plot.
+```{r}
+# load genes which we want to highlight in the plot
+label_targets <- readLines(paste0(sample,'_gene_annotation.txt'))
+common_targets <- readLines('common_genes_annotated.txt')
+
+## generate top degree nodes for each community
+clust <- data.frame(name = names(membership(clustering)),
+                cluster = as.numeric(membership(clustering)),
+                degree=degree(g)) %>%
+dplyr::inner_join(nodes, by = "name") %>%
+dplyr::group_by(cluster) %>% slice_max(order_by=degree, n = 5) %>% pull(name) %>% 
+writeLines(paste0('top_degree_nodes_per_community_',sample,'_',npn.func,'_res',res,"_s",sparsity,"_",sample,tag,'.txt'))
+
+# combine top degree nodes to labeled list as well
+tmp <- readLines(paste0('top_degree_nodes_per_community_',sample,'_',npn.func,'_res',res,"_s",sparsity,"_",sample,tag,'.txt'))
+label_targets <- union(label_targets, tmp)
+
+## add cluster info
+V(g)$cluster <- clustering$membership # add community info to graph
+V(g)$group <- ifelse(V(g)$name %in% label_targets,sample,"other")
+V(g)$group2 <- ifelse(V(g)$name %in% common_targets,"common","specific")
+
+# generate colors based on cluster
+colors <- RColorBrewer::brewer.pal(length(clustering),"Set2")
+
+V(g)$color <- colors[V(g)$cluster]
+V(g)$color <- ifelse(V(g)$group2=='common',V(g)$color,paste0(V(g)$color,'7f')) # if common TFs, use darker shade
+
+V(g)$frame.color <- "NA"
+
+V(g)$label <- ifelse(V(g)$group == "other",NA,V(g)$name)
+V(g)$label.color <- 'black'
+V(g)$size <- 0.3*degree(g)
+V(g)$label.cex <- 0.75
+
+# set distance of label
+V(g)$label.dist <- 0.4
+
+# set edge color
+E(g)$color <- "gray80"
+# E(g)$size <- 0.1
+E(g)$width <- 1.5*E(g)$corr
+cut_off <- 0.9
+E(g)$lty <- ifelse(E(g)$corr>=unname(quantile(E(g)$corr, cut_off)), 1, 0) # only show top edges
+
+# set the within-module edges to some large weight, and the between module edges to some small weight
+# and then choose 'layout_with_fr' to make the grouped layout 
+edge.weights <- function(community, network, weight.within = 10, weight.between = 1) {
+    bridges <- crossing(communities = community, graph = network)
+    weights <- ifelse(test = bridges, yes = weight.between, no = weight.within)
+    return(weights) 
+}
+E(g)$weight <- edge.weights(clustering, g)
+ 
+```
+
+```{r, fig.width=8, fig.height=8}
+plot(g, layout=layout_with_fr)
+```
+
+
+```{r}
+## write graph to object
+saveRDS(g, paste0("graph_",npn.func,'_res',res,"_s",sparsity,"_",sample,"_",tag,".rds"))
+```
+
+
+# session info
+```{r }
+sessionInfo()
+```
