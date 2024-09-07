@@ -186,7 +186,15 @@ write.csv(clust,paste0('clustering_membership_copula_',sample,'_',npn.func,'_res
 ```
 
 ## visualization of graph
-We need to set some parameters before plot.
+
+We need to set some parameters before plot:
+
+-   labeled nodes: perturb-seq targets and top degree nodes in each community
+-   node size: node degree
+-   color: community grouping
+-   color shade: common TFs in both contexts have darker shades
+-   edge width: correlation strength. Only top 10% edges are shown
+
 ```{r}
 # load genes which we want to highlight in the plot
 label_targets <- readLines(paste0(sample,'_gene_annotation.txt'))
@@ -247,14 +255,13 @@ E(g)$weight <- edge.weights(clustering, g)
 plot(g, layout=layout_with_fr)
 ```
 
-
 ```{r}
 ## write graph to object
 saveRDS(g, paste0("graph_",npn.func,'_res',res,"_s",sparsity,"_",sample,"_",tag,".rds"))
 ```
 
-
 # session info
+
 ```{r }
 sessionInfo()
 ```

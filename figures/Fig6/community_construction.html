@@ -2439,9 +2439,9 @@ TRM_Tex
 <h2><span class="header-section-number">4.3</span> graph generation</h2>
 <pre class="r"><code>g = graph_from_data_frame(df, directed=FALSE, vertices = nodes)
 print(g, e=TRUE, v=TRUE)</code></pre>
-<pre><code>## IGRAPH 051863b UN-- 170 2257 -- 
+<pre><code>## IGRAPH acb6276 UN-- 170 2257 -- 
 ## + attr: name (v/c), group (v/c), corr (e/n)
-## + edges from 051863b (vertex names):
+## + edges from acb6276 (vertex names):
 ##  [1] Ahr    --Arid3a  Ahr    --Arnt    Arnt   --Arntl   Ahr    --Atf1   
 ##  [5] Atf2   --Atf1    Atf1   --Atf7    Atf2   --Atf7    Arid3a --Bbx    
 ##  [9] Bhlhe40--Arnt    Bhlhe40--Arntl   Bhlhe41--Arid3a  Bhlhe41--Arnt   
@@ -2579,7 +2579,15 @@ Housekeeping
 <div id="visualization-of-graph" class="section level2" number="4.5">
 <h2><span class="header-section-number">4.5</span> visualization of
 graph</h2>
-<p>We need to set some parameters before plot.</p>
+<p>We need to set some parameters before plot:</p>
+<ul>
+<li>labeled nodes: perturb-seq targets and top degree nodes in each
+community</li>
+<li>node size: node degree</li>
+<li>color: community grouping</li>
+<li>color shade: common TFs in both contexts have darker shades</li>
+<li>edge width: correlation strength. Only top 10% edges are shown</li>
+</ul>
 <pre class="r"><code># load genes which we want to highlight in the plot
 label_targets &lt;- readLines(paste0(sample,&#39;_gene_annotation.txt&#39;))
 common_targets &lt;- readLines(&#39;common_genes_annotated.txt&#39;)

@@ -17,11 +17,13 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 # import packages and functions
+
 ```{r import packages and functions}
 suppressMessages(library(data.table))
 suppressMessages(library(ggplot2))
 suppressMessages(library(ggforce))
 suppressMessages(library(dplyr))
+suppressMessages(library(amap))
 
 suppressMessages(library(clusterProfiler))
 suppressMessages(library(org.Mm.eg.db))
@@ -29,43 +31,148 @@ suppressMessages(library(enrichplot))
 suppressMessages(library(xlsx))
 suppressMessages(library(pheatmap))
 
+# load functions
 set.seed(42)
 fl.sources <- list.files("../../scripts/utils/", full.names = T)
 tmp <- sapply(fl.sources,source)
 ```
 
+```{r}
+# set plot parameters, which is suitable for CNS publication
+plot.format = theme(
+    plot.background=element_blank(),
+    panel.grid=element_blank(),
+    panel.background=element_blank(),
+    panel.border=element_rect(color="black", linewidth=0.5, fill=NA),
+    axis.line=element_blank(),
+    axis.ticks=element_line(color="black",linewidth=0.5),
+    axis.text=element_text(color="black", size=7),
+    axis.title=element_text(color="black", size=7),
+    plot.title=element_text(color="black", size=7),
+    legend.background=element_blank(),
+    legend.key=element_blank(),
+    legend.text=element_text(color="black", size=7),
+    legend.title=element_text(color="black", size=7))
+```
+
 # import data
+We load the PageRank scores matrix along with the meta file containing the cell types.
 ```{r import data}
-clusterNo <- 7
 Data_normed <- read.csv("pagerank.csv", row.names = 1)
 group_sorted <- read.table('group_file.txt',header = T, row.names = 1)
 group_sorted$oldName <- rownames(group_sorted)
 rownames(group_sorted) <- group_sorted$newName
+```
+
+# Kmeans clustering of TFs
+## pca plot
+
+The following plot shows cumulative variance explained vs number of samples. After manually checking, we decide to use PC=10 to reduce the data based on "elbow" method, which explained \~75% variance.
+
+```{r, fig.width=3, fig.height=3}
+data.pca <- prcomp(Data_normed)
+
+# plot the cumulative variance explained vs # of components
+s = (data.pca$sdev)^2/sum((data.pca$sdev)^2)
+df2 <- data.frame(x=c(1:length(data.pca$sdev)),y=cumsum(s))
+p2 <- ggplot(df2)+aes(x=x,y=y)+geom_point()+geom_line()+
+  labs(x="Principal Component",y="Cumulative Proportion of Variance Explained")+
+  plot.format
+print(p2)
+```
+
+```{r}
+## save to file
+pdf("pca.pdf", width=3, height=3)
+print(p2)
+dev.off()
+```
+
+## hyperparams selection for Kmeans clustering
+
+We need to determine the best distance metric and number of K for Kmeans clustering. To evaluate the clustering quality, we computed the average silhouette width which combines both cohesion (how close data points in a cluster are to each other) and separation (how distinct a cluster is from other clusters). A higher silhouette width value indicates better clustering quality.
+
+We used five common distance metrics:
+
+-   Euclidean distance
+-   Manhattan distance
+-   Kendall correlation 
+-   Pearson correlation 
+
+Number of k is selected from the range [3, 20]. The lower limit is considering the number of disease states while the upper limit is the balance of searching space and searching speed.
+
+```{r}
+PCNo <- 10
+data_reduced <- as.data.frame(prcomp(Data_normed, rank. = PCNo)$x)
+df2 <- findOptimal(data_reduced, max_k = 20)
+```
+
+```{r}
+# save to file
+write.csv(df2, 'kmeans_param.csv')
+```
+
+```{r, fig.width=5, fig.height=3}
+p2 <- ggplot(df2)+aes(x=clusters,y=y,color=method,group=method)+
+    geom_line()+geom_point()+xlim(3,20)+
+    labs(x='number of groups K',y='average silhouette width',color='distance metrics')+plot.format
+print(p2)
+```
+
+
+```{r}
+# save to file
+pdf("kmeans_param.pdf",width=3.5,height = 2)
+print(p2)
+dev.off()
+```
+
+## Kmeans clustering
+```{r}
+set.seed(42)
+clusterNo <- 7
+Cluster <- amap::Kmeans(data_reduced, centers = clusterNo, nstart = 25,iter.max = 50, method = "pearson")
+
+# extract tfs from same cluster
+df2 <- as.data.frame(Cluster$cluster)
+names(df2) <- "cluster"
+```
+
+
+```{r}
+# save to file
+write.csv(df2, paste0('cluster_k',clusterNo,'.csv'))
+```
+
+# generate plots
+We now import the pre-defined graph showing the differentiation path.
+```{r import data2}
 wavedf <- data.frame(x = c(1,2,2,3,3,4,4,5,5), 
                      y = c(3,5,1,3,1,3,0,4,2),
                      samplename = c("Naive","TE","TexProg","MP","TexInt","TRM","TexTerm","TEM","TCM"),
                      labelposx = c(1,2,2,3,3,4,4,5,5),
                      labelposy = c(3,5,1,3,1.4,3,0,4,2)-0.4)
-df2 <- read.csv("cluster_result.csv", row.names = 1)
 ```
 
-# generate plots
 
 ```{r generate wave files}
 tmp <- lapply(c(1:clusterNo), function(x) outputWave(x, wavedf, df2, Data_normed, group_sorted))
-print(tmp[[1]])
+print(tmp[[2]])
 
 ```
 
-
 # pathway analysis
-You can skip this part if you already have enriched pathways. Running this part may take ~10 min.
+
+You can skip this part if you already have enriched pathways. Running this part may take \~10 min.
+
 ```{r over-representation GO and KEGG terms}
 # L <- list.files(path="./", pattern = "c[0-9]+.txt")
 # tmp <- lapply(L, gsea)
 
 ```
+
 # selected pathways visualization
+
 ```{r}
 df <- read.xlsx("SuppFig4 wave GSEA pathways.xlsx", sheetIndex = 1) 
 df2 <- df %>% dplyr::select(wave.cluster, Description, p.adjust) %>%
@@ -74,7 +181,6 @@ df2 <- df %>% dplyr::select(wave.cluster, Description, p.adjust) %>%
 knitr::kable(df[1:6,1:6], caption = "pathways result") |> kableExtra::kable_styling(latex_options = 'scale_down')
 knitr::kable(df2[1:6,1:6], caption = "data for visualization") |> kableExtra::kable_styling(latex_options = 'scale_down')
 ```
-
 
 ```{r heatmap visualization}
 cutoff <- 0.05
@@ -107,9 +213,8 @@ dev.off()
 
 ```
 
-
 # session info
+
 ```{r }
 sessionInfo()
 ```
-
