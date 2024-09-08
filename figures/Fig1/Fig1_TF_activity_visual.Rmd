@@ -1,7 +1,7 @@
 ---
 title: "visualization of TF activity"
 author: "Cong"
-date: "2024-07-01"
+date: "2024-09-07"
 output: 
   html_document:
     toc: true
@@ -40,7 +40,6 @@ mycolors <- list(subsets = c("#A6A6A6", "#FF0000", "#0007F4", "#FFA75C", "#00AAF
 names(mycolors$subsets) <- unique(group_sorted$Group)
 breaksList = seq(-2, 2, by = 0.1)
 
-
 # function
 get_heatmap <- function(df,size=3,...){
   g2 <- group_sorted[colnames(df),]
@@ -61,6 +60,53 @@ get_heatmap <- function(df,size=3,...){
                  annotation_colors = mycolors, border_color = NA, ...)
   return(p1)
 }
+
+```
+
+# import pagerank scores
+```{r}
+Data <- read.csv('pr_original.csv', row.names = 1)#### default scale
+#### zscore
+Data_normed <- zscore(Data)
+
+#### scale to [0,1]
+Data_normed_2 <- scaleData(Data)
+
+#### scale to [-2,2]
+tmp <- apply(Data_normed,1:2, function(x) min(x, 2))
+Data_normed_3 <- as.data.frame(apply(tmp,1:2, function(x) max(x, -2)))
+
+```
+
+
+# identify non-specific TFs and cell type-specific TFs
+## non-specific TFs
+Non-specific TFs are those TFs with mean PageRank ranked as top10% across 9 cell states and coefficients of variation (CV) less than 0.5
+
+```{r}
+tmp <- mostConserveTFs(highlyRankedTFs(Data,0.1),0.5) 
+housekeeping <- rownames(tmp)
+```
+
+## heatmap of non-specific TFs
+```{r, fig.width=10, fig.height=8}
+get_heatmap(Data_normed_3[housekeeping,], cluster_rows=F, size = 5) 
+```
+
+## identify cell type-specific TFs
+```{r}
+# load meta file
+
+
+lapply(unique(group_sorted$Group),
+       function(x) callSpecificTFs(x,pr=Data[!(row.names(Data) %in% housekeeping),],sort.col = F,p=p,d=d, label.color = mycolors$subsets, normalize.method = '-2-2', max.row=70)) # excluded housekeeping genes
+
+```
+
+
+
+# identify multi-taskers and single-taskers
+```{r}
 
 ```
 
@@ -86,11 +132,6 @@ TFs activity enriched in a single state
 p2 <- get_heatmap(df_single, cluster_rows=F)
 ```
 
-# heatmap of non-specific TFs
-```{r}
-df <- read.xlsx("Extended Data Table 1 _ TF PageRank Scores of non-specific versus specific TFs.xlsx", sheetIndex = 1, row.names=T)
-get_heatmap(df, cluster_rows=F) 
-```
 
 
 # heatmap of cell state-specific TFs

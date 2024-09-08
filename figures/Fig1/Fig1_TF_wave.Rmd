@@ -86,6 +86,7 @@ print(p2)
 pdf("pca.pdf", width=3, height=3)
 print(p2)
 dev.off()
+
 ```
 
 ## hyperparams selection for Kmeans clustering
