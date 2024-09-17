@@ -1,4 +1,4 @@
-gsea <- function(x,key=NULL,output_file=NA,is.plot=F,show.item=30, go.width=10, pvalue=0.1){
+gsea <- function(x,key=NULL,output_file=NA,is.plot=F,show.item=30, go.width=10, pvalue=0.1, qvalue=0.5){
   
   # get genes and gene id -------------------
   prefix <- gsub(".txt","",x)
@@ -13,7 +13,7 @@ gsea <- function(x,key=NULL,output_file=NA,is.plot=F,show.item=30, go.width=10, 
   # GO term over-representation test-------------------
   ego <- enrichGO(gene = gene, 
                   OrgDb = org.Mm.eg.db, ont = "BP",keyType = "SYMBOL",
-                  pvalueCutoff = 0.1,qvalueCutoff = 0.5
+                  pvalueCutoff = pvalue,qvalueCutoff = qvalue
   )
   ego2 <- clusterProfiler::simplify(ego, cutoff=0.7, by="p.adjust", select_fun=min)
   
@@ -28,10 +28,11 @@ gsea <- function(x,key=NULL,output_file=NA,is.plot=F,show.item=30, go.width=10, 
 
   # KEGG over-representation test ---------------------------
   kk <- enrichKEGG(gene = gene.id, organism = "mmu", 
-                   minGSSize = 2, pvalueCutoff = 0.1, qvalueCutoff = 0.5)
+                   minGSSize = 2, pvalueCutoff = pvalue, qvalueCutoff = qvalue)
   if (!is.null(kk) && nrow(kk)>=1){
     kk2 <- setReadable(kk, OrgDb = org.Mm.eg.db, keyType = "ENTREZID")
-    o <- rbind(kk2@result,ego2@result)
+    common_cols <- intersect(names(kk2@result),names(ego2@result))
+    o <- rbind(kk2@result[,common_cols],ego2@result[,common_cols])
   }else{
     o <- ego2@result
   }
