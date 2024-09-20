@@ -1,0 +1,212 @@
+library(Seurat)
+library(pheatmap)
+library(tibble)
+library(dplyr)
+library(purrr)
+library(gridExtra)
+library(gtable)
+library(grid)
+library(viridis)
+library(RColorBrewer)
+library(fgsea)
+library(reshape2)
+library(ggplot2)
+library(tidyr)
+library(grid)
+library(this.path)
+
+setwd(this.path::here())
+
+ModuleScores = function(sobj, query_guides, ctrl_guides, custom_gene_sets, gene_set_order, gRNA_order, signature_groups, gaps_col, gaps_row, scale_max=NULL) {
+  sobj = sobj[, (sobj@meta.data$guide_ID %in% query_guides) | (sobj@meta.data$perturbed_gene == 'gScramble')] 
+  
+  sobj = AddModuleScore(object = sobj, 
+                        features = custom_gene_sets,
+                        name = "ModuleScore")
+  
+  df_scores = sobj@meta.data %>% 
+    dplyr::select(starts_with("ModuleScore"), perturbed_gene)
+  
+  df_long = pivot_longer(df_scores, cols = starts_with("ModuleScore"), names_to = "GeneSet", values_to = "Score")
+  
+  average_scores = df_long %>%
+    group_by(GeneSet, perturbed_gene) %>%
+    summarize(AvgScore = mean(Score, na.rm = TRUE)) %>%
+    ungroup()
+  
+  mtx = pivot_wider(average_scores, names_from = perturbed_gene, values_from = AvgScore)
+  mtx = as.matrix(mtx[,-1]) # Assuming the first column is GeneSet names
+  
+  rownames(mtx) = average_scores$GeneSet[!duplicated(average_scores$GeneSet)]
+  rownames(mtx) = c(unlist(lapply(rownames(mtx), function (x) gsub("ModuleScore", "", x))))
+  
+  idx = sapply(rownames(mtx), function(x) as.integer(x), USE.NAMES = FALSE)
+  rownames(mtx) = names(custom_gene_sets)[idx]
+  
+  mtx = mtx[gene_set_order, ]
+  mtx = (mtx - mtx[, ctrl_guides])
+  mtx = mtx[, !colnames(mtx) %in% ctrl_guides]
+
+  
+  mask = gRNA_order %in% colnames(mtx)
+  signature_groups = signature_groups[mask]
+  gRNA_order = gRNA_order[mask]
+  mtx = mtx[, gRNA_order]
+  
+  mtx = t(mtx)
+  val_max = max(abs(mtx))
+  val_min = -val_max
+  
+  ann_colors = list(signature_group = c(Ctrl = "#FFFFFF", TRM_Selective = "#139C3B", TRM_TEx_Term_Dual = "#7F139C", TEx_Term_Selective = "#5c4937", TRM_Up = "#000000"))
+  
+  gene_annots = data.frame(signature_group = as.factor(signature_groups))
+  gene_annots$signature_group = factor(gene_annots$signature_group, levels=unique(gene_annots$signature_group))
+  rownames(gene_annots) = gRNA_order
+  
+  pheatmap_partial = function(val_min, val_max, show_rownames, legend, annotation_legend, main, norm_mtx) {pheatmap(norm_mtx, margins = c(5,5,0,5), cellheight = 10, cellwidth = 14,
+                                                                                                                    cluster_cols = FALSE, show_colnames = TRUE, cluster_rows = FALSE, show_rownames = show_rownames, annotation_legend = annotation_legend,
+                                                                                                                    annotation_row = gene_annots, annotation_colors = ann_colors, annotation_names_row = FALSE, legend = legend,
+                                                                                                                    border_color = NA, treeheight_row = 0, treeheight_col = 0, fontsize_col = 8, angle_col = '315', main = main,
+                                                                                                                    silent = TRUE, breaks = seq(val_min, val_max, length.out = 101), gaps_col = gaps_col, gaps_row = gaps_row,
+                                                                                                                    #color = viridis(100, option = "D"))
+                                                                                                                    color = colorRampPalette(rev(brewer.pal(11, "RdBu")))(100))}
+  
+  return(list(fxn=pheatmap_partial, mtx=mtx))
+}
+
+save_pheatmap_pdf = function(x, filename, width=NULL, height=NULL) {
+  stopifnot(!missing(x))
+  stopifnot(!missing(filename))
+  if (is.null(width) | is.null(height)) {
+    pdf(filename)
+  } else {
+    pdf(filename, width=width, height=height)
+  }
+  
+  print(x)
+  dev.off()
+}
+
+save_grob_pdf = function(x, filename, width=NULL, height=NULL) {
+  stopifnot(!missing(x))
+  stopifnot(!missing(filename))
+  if (is.null(width) | is.null(height)) {
+    pdf(filename)
+  } else {
+    pdf(filename, width=width, height=height)
+  }
+  
+  grid.newpage()
+  grid.draw(x)
+  
+  dev.off()
+}
+
+capitalize_genes_in_sobj = function(x) {
+  RNA = sobj@assays$RNA
+  rownames(RNA@data) = toupper(rownames(RNA@data))
+  rownames(RNA@scale.data) = toupper(rownames(RNA@scale.data))
+  rownames(RNA@counts) = toupper(rownames(RNA@counts))
+  sobj@assays$RNA = RNA
+  return (sobj)
+}
+
+complete_mtx_with_na = function(mtx, gRNA_order) {
+  missing_gRNAs = setdiff(gRNA_order, rownames(mtx))
+  if (length(missing_gRNAs)) {
+    for (i in 1:length(missing_gRNAs)) {
+      mtx = rbind(mtx, rep(NA, 2))
+      rownames(mtx)[dim(mtx)[1]] = missing_gRNAs[i]
+    }
+  }
+  mtx = mtx[gRNA_order, ]
+  return (mtx)
+}
+
+### MAIN ###
+
+signatures = read.csv('Signature1.TRM.csv', header=FALSE)
+gene_set_order = c('TRM_Up', 'TRM_Down')
+
+rownames(signatures) = signatures[, 1]
+signatures = signatures[-1]
+custom_gene_sets = list()
+for (r in rownames(signatures)) {
+  tmp = as.character(signatures[r,])
+  tmp = tmp[tmp != ""]
+  custom_gene_sets[[r]] = toupper(tmp) 
+}
+
+
+gaps_row = c(4, 15)
+
+query_guides = c("gHinfp-4", "gEtv5-4", "gArid3a-2", "gZbtb49-4", 'gFosb-2', 'gZfp410-4',
+                 "gTfdp1-2", "gZfp410-2", "gFoxd2-2", "gZscan20-4", "gJdp2-2", "gPrdm4-2",
+                 "gNfil3-2", "gNfatc1-4", "gGfi1-2", "gZfp143-4", "gNr4a2-2", "gIrf8-4",
+                 "gZfp324-4", "gPrdm1-2", "gStat3-4", "gHic1-4", "gIkzf3-2", "gPrdm1-4")
+
+ctrl_guides = c('gScramble')
+
+gRNA_order = c('gFosb', 'gPrdm1', 'gHic1', 'gGfi1', 'gNfil3', 'gNr4a2', 'gIkzf3', 'gStat3', 'gTfdp1', 'gIrf8', 'gZfp324', 'gZscan20', 'gNfatc1', 'gZfp410', 'gJdp2', 'gArid3a', 'gEtv5')
+signature_groups = c('TRM_Selective', 'TRM_TEx_Term_Dual', 'TRM_TEx_Term_Dual', 'TRM_TEx_Term_Dual', 'TEx_Term_Selective', 'TEx_Term_Selective', 'TEx_Term_Selective', 'TEx_Term_Selective', 'TEx_Term_Selective', 'TEx_Term_Selective', 'TEx_Term_Selective', 'TEx_Term_Selective', 'TEx_Term_Selective', 'TEx_Term_Selective', 'TEx_Term_Selective', 'TRM_Up', 'TRM_Up')
+gaps_col = c(0)
+
+
+args_ls = list()
+
+sobj = readRDS('Cl13_23TP04_20231010.rds')
+args_ls[['Cl13']] = list(tag = 'Cl13', sobj = capitalize_genes_in_sobj(sobj))
+
+sobj = readRDS('TP16_Arm_clean_simpler4clustersn_20231020.rds')
+args_ls[['Arm']] = list(tag = 'Arm', sobj = capitalize_genes_in_sobj(sobj))
+
+res = list()
+
+for (args in args_ls) {
+  res[[args$tag]] = ModuleScores(args$sobj, query_guides, ctrl_guides, custom_gene_sets, gene_set_order, gRNA_order, signature_groups, gaps_col, gaps_row)
+  write.csv(res[[args$tag]]$mtx, paste0('Fig3J.', args$tag, '.ModScores.RdBu.offset.none.csv'), row.names = TRUE)
+}
+
+CompositeTransform = function(mtx1, mtx2) {
+  mtx = cbind(mtx1, mtx2)
+  
+  tmp = matrix(scale(c(unname(mtx))), nrow = nrow(mtx), ncol = ncol(mtx))
+  rownames(tmp) = rownames(mtx)
+  colnames(tmp) = colnames(mtx)
+  norm_mtx = tmp
+  
+  m = ncol(mtx1)
+  norm_mtx1 = norm_mtx[, 1:m]
+  norm_mtx2 = norm_mtx[, (m+1):ncol(norm_mtx)]
+  
+  return(list(norm_mtx1=norm_mtx1, norm_mtx2=norm_mtx2))
+}
+
+fig = list()
+#gRNA_order = c('gScramble', gRNA_order)
+
+### Module Scores
+mtx1 = complete_mtx_with_na(res$Arm$mtx, gRNA_order)
+mtx2 = complete_mtx_with_na(res$Cl13$mtx, gRNA_order)
+
+output = CompositeTransform(mtx1, mtx2)
+Arm_mtx = output$norm_mtx1
+Cl13_mtx = output$norm_mtx2
+
+val_max = max(abs(Arm_mtx), abs(Cl13_mtx), na.rm = TRUE)
+val_min = -val_max
+
+fig[['2']][['Arm']] = res$Arm$fxn(val_min, val_max, show_rownames=FALSE, legend=FALSE, annotation_legend=FALSE, main='Arm', norm_mtx=Arm_mtx)
+fig[['2']][['Cl13']] = res$Cl13$fxn(val_min, val_max, show_rownames=TRUE, legend=TRUE, annotation_legend=TRUE, main='Cl13', norm_mtx=Cl13_mtx)
+
+grob1 = fig[['2']][['Arm']]$gtable
+grob2 = fig[['2']][['Cl13']]$gtable
+
+grob1$widths[[6]] = unit(0, 'cm')
+grob1$widths[[5]] = unit(0, 'cm')
+grob1$widths[[4]] = unit(0.5, 'cm')
+
+combined_grob = gtable_cbind(grob1, grob2, size = "first")
+save_grob_pdf(combined_grob, paste0('Fig3J.Arm+Cl13.ModScores.', 'offset.scale_all.pdf'), height=4, width=12)
+plot(combined_grob)
+
