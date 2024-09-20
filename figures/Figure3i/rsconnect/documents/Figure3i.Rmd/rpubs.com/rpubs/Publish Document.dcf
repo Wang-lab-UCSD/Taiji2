@@ -1,0 +1,10 @@
+name: Publish Document
+title:
+username:
+account: rpubs
+server: rpubs.com
+hostUrl: rpubs.com
+appId: https://api.rpubs.com/api/v1/document/1222436/57912eb31483405d95a8cccb5add7a8c
+bundleId: https://api.rpubs.com/api/v1/document/1222436/57912eb31483405d95a8cccb5add7a8c
+url: http://rpubs.com/ajambor/1222436
+version: 1
