@@ -28,7 +28,8 @@ Major update of Taiji with enhanced downstream analysis, featuring:
 ## Resources
 - website:
 - tutorial and demo: 
-- intro of Taiji: https://taiji-pipeline.github.io/ 
+- intro of Taiji: https://taiji-pipeline.github.io/
+- download Seurat objects [here](https://ucsdcloud-my.sharepoint.com/:f:/g/personal/ajambor_ucsd_edu/Eh-PQxt5WxJHjo5whw01KqYB1vOc-BFTlutg2Var8xzfeQ?e=TbBrpE) and move to appropriate folders to run tutorials
 
 ## How to cite
 Chung, H. Kay, Cong Liu, Ming Sun, Eduardo Casillas, Timothy Chen, Brent Chick, Jun Wang et al. "Multiomics atlas-assisted discovery of transcription factors enables specific cell state programming." bioRxiv (2023): 2023-01. https://www.biorxiv.org/content/10.1101/2023.01.03.522354v3.abstract.
