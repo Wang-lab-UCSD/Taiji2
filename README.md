@@ -1,6 +1,8 @@
 # Taiji2
 
-Major update of Taiji with enhanced downstream analysis, featuring: - Cell-state specificity analysis
+Major update of Taiji with enhanced downstream analysis, featuring: 
+
+-   Cell-state specificity analysis
 
 -   TF’s edgeweight per locus calculation
 
