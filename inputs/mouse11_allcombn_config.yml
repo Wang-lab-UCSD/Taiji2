@@ -1,0 +1,23 @@
+annotation: "/home/cong/genome/mm10/Annotation/gencode.vM7.annotation.gtf"
+seq_index: "/home/cong/genome/mm10/Sequence/mm10.index"
+bwa_index: "/home/cong/genome/mm10/Sequence/BWAIndex"
+genome: "/home/cong/genome/mm10/Sequence/mm10.fa"
+input: "/home/cong/Taiji/mouse_immune/mouse11_allcombn/mouse11_allcombn_input.yml"
+output_dir: "/home/cong/Taiji/mouse_immune/mouse11_allcombn/output"
+#picard: "/home/junwang/soft/picard.jar"
+motif_file: "/home/cong/Motif_Databases/cisbp_mouse_2.meme"
+star_index: "/home/cong/genome/mm10/Sequence/STAR_index"
+rsem_index: "/home/cong/genome/mm10/Sequence/RSEM_index"
+tmp_dir: "/tmp"
+#external_network: "/home/cong/learn/Reactome/pathway.tsv"
+resource:
+    ATAC_Align:
+        memory: 40
+    RNA_Align:
+        memory: 40
+    RNA_Make_Expr_Table:
+        memory: 40
+    ATAC_Filter_Bam:
+        memory: 80
+
+
