@@ -42,7 +42,12 @@ taiji run --config config.yml -n 3 +RTS -N3
 To replicate the paper's results, use the configure file and input file in this [repo](https://github.com/Wang-lab-UCSD/Taiji2/tree/main/inputs/).
 
 ### run downstream analysis
-After running Taiji, you will have `GeneRanks.tsv` file in `/some_path_to_Taiji/output/`, which stores the PageRank scores of TFs across samples. This will be the major data in the following downstream analysis. Additionally, gene expression (normalized by TPM) file `expression_profile.tsv` is also available in folder `/some_path_to_Taiji/output/RNASeq/`
+After running Taiji, you will have `GeneRanks.tsv` file in `/some_path_to_Taiji/output/`, which stores the PageRank scores of TFs across samples. This will be the major data in the following downstream analysis. 
+
+Additionally, gene expression (normalized by TPM) file `expression_profile.tsv` is also available in folder `/some_path_to_Taiji/output/RNASeq/`
+
+#### cell state specificity analysis
+In addition to PageRank scores and gene expression matrices, group file with cell state annotation is also needed. Check the [demo group file](https://github.com/Wang-lab-UCSD/Taiji2/blob/main/figures/Fig1/group_file.txt) for example.
 
 
 ## Resources
