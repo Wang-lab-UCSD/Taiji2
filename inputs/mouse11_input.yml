@@ -1,0 +1,976 @@
+RNA-seq:
+  - id: MP_Milner_1_RNA
+    group: MP_Milner_1
+    replicates:
+      - rep: 1
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR12540694_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR12540694_2.fastq.gz
+      - rep: 2
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR12540695_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR12540695_2.fastq.gz
+  - id: TE_Milner_1_RNA
+    group: TE_Milner_1
+    replicates:
+      - rep: 1
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR12540696_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR12540696_2.fastq.gz
+      - rep: 2
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR12540697_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR12540697_2.fastq.gz
+  - id: MP_Milner_2_RNA
+    group: MP_Milner_2
+    replicates:
+      - rep: 1
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR12540694_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR12540694_2.fastq.gz
+      - rep: 2
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR12540695_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR12540695_2.fastq.gz
+  - id: TE_Milner_2_RNA
+    group: TE_Milner_2
+    replicates:
+      - rep: 1
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR12540696_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR12540696_2.fastq.gz
+      - rep: 2
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR12540697_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR12540697_2.fastq.gz
+  - id: Naive_Kaech_1_RNA
+    group: Naive_Kaech_1
+    replicates:
+      - rep: 1
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR6847164_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR6847164_2.fastq.gz
+      - rep: 2
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR6847165_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR6847165_2.fastq.gz
+      - rep: 3
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR6847166_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR6847166_2.fastq.gz
+  - id: MP_Kaech_1_RNA
+    group: MP_Kaech_1
+    replicates:
+      - rep: 1
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR6847199_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR6847199_2.fastq.gz
+      - rep: 2
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR6847200_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR6847200_2.fastq.gz
+      - rep: 3
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR6847201_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR6847201_2.fastq.gz
+  - id: TE_Kaech_1_RNA
+    group: TE_Kaech_1
+    replicates:
+      - rep: 1
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR6847213_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR6847213_2.fastq.gz
+      - rep: 2
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR6847214_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR6847214_2.fastq.gz
+      - rep: 3
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR6847215_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR6847215_2.fastq.gz
+  - id: Naive_Kaech_2_RNA
+    group: Naive_Kaech_2
+    replicates:
+      - rep: 1
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR6847164_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR6847164_2.fastq.gz
+      - rep: 2
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR6847165_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR6847165_2.fastq.gz
+      - rep: 3
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR6847166_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR6847166_2.fastq.gz
+  - id: MP_Kaech_2_RNA
+    group: MP_Kaech_2
+    replicates:
+      - rep: 1
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR6847199_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR6847199_2.fastq.gz
+      - rep: 2
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR6847200_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR6847200_2.fastq.gz
+      - rep: 3
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR6847201_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR6847201_2.fastq.gz
+  - id: TE_Kaech_2_RNA
+    group: TE_Kaech_2
+    replicates:
+      - rep: 1
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR6847213_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR6847213_2.fastq.gz
+      - rep: 2
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR6847214_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR6847214_2.fastq.gz
+      - rep: 3
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR6847215_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR6847215_2.fastq.gz
+  - id: TRM_lung_A_RNA
+    group: TRM_lung_A
+    replicates:
+      - rep: 1
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR9917176_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR9917176_2.fastq.gz
+      - rep: 2
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR9917177_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR9917177_2.fastq.gz
+      - rep: 3
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR9917178_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR9917178_2.fastq.gz
+  - id: TRM_lung_I_RNA
+    group: TRM_lung_I
+    replicates:
+      - rep: 1
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR9917179_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR9917179_2.fastq.gz
+      - rep: 2
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR9917180_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR9917180_2.fastq.gz
+      - rep: 3
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR9917181_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR9917181_2.fastq.gz
+  - id: TRM_IEL_1_RNA
+    group: TRM_IEL_1
+    replicates:
+      - rep: 1
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR6317748_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR6317748_2.fastq.gz
+      - rep: 2
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR6317749_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR6317749_2.fastq.gz
+  - id: TRM_IEL_2_RNA
+    group: TRM_IEL_2
+    replicates:
+      - rep: 1
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR11317989_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR11317989_2.fastq.gz
+      - rep: 2
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR11317990_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR11317990_2.fastq.gz
+  - id: Naive_Mackay_RNA
+    group: Naive_Mackay
+    replicates:
+      - rep: 1
+        files:
+          - path: /home/cong/ncbi/public/sra/SRR2097394.fastq.gz
+      - rep: 2
+        files:
+          - path: /home/cong/ncbi/public/sra/SRR2097403.fastq.gz
+      - rep: 3
+        files:
+          - path: /home/cong/ncbi/public/sra/SRR2097412.fastq.gz
+      - rep: 4
+        files:
+          - path: /home/cong/ncbi/public/sra/SRR2097413.fastq.gz
+  - id: TCM_Mackay_RNA
+    group: TCM_Mackay
+    replicates:
+      - rep: 1
+        files:
+          - path: /home/cong/ncbi/public/sra/SRR2097395.fastq.gz
+      - rep: 2
+        files:
+          - path: /home/cong/ncbi/public/sra/SRR2097404.fastq.gz
+  - id: TEM_Mackay_RNA
+    group: TEM_Mackay
+    replicates:
+      - rep: 1
+        files:
+          - path: /home/cong/ncbi/public/sra/SRR2097396.fastq.gz
+      - rep: 2
+        files:
+          - path: /home/cong/ncbi/public/sra/SRR2097405.fastq.gz
+  - id: TRM_liver_RNA
+    group: TRM_liver
+    replicates:
+      - rep: 1
+        files:
+          - path: /home/cong/ncbi/public/sra/SRR2097398.fastq.gz
+      - rep: 2
+        files:
+          - path: /home/cong/ncbi/public/sra/SRR2097407.fastq.gz
+  - id: TEM_Milner_RNA
+    group: TEM_Milner
+    replicates:
+      - rep: 1
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR12540688_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR12540688_2.fastq.gz
+      - rep: 2
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR12540689_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR12540689_2.fastq.gz
+      - rep: 3
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR12540692_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR12540692_2.fastq.gz
+      - rep: 4
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR12540693_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR12540693_2.fastq.gz
+  - id: TCM_Milner_RNA
+    group: TCM_Milner
+    replicates:
+      - rep: 1
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR12540690_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR12540690_2.fastq.gz
+      - rep: 2
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR12540691_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR12540691_2.fastq.gz
+  - id: Naive_Milner_RNA
+    group: Naive_Milner
+    replicates:
+      - rep: 1
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR12540698_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR12540698_2.fastq.gz
+      - rep: 2
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR12540699_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR12540699_2.fastq.gz
+  - id: TCM_Renkema_RNA
+    group: TCM_Renkema
+    replicates:
+      - rep: 1
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR12054802_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR12054802_2.fastq.gz
+      - rep: 2
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR12054803_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR12054803_2.fastq.gz
+      - rep: 3
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR12054804_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR12054804_2.fastq.gz
+  - id: TEM_Renkema_RNA
+    group: TEM_Renkema
+    replicates:
+      - rep: 1
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR12054805_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR12054805_2.fastq.gz
+      - rep: 2
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR12054806_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR12054806_2.fastq.gz
+      - rep: 3
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR12054807_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR12054807_2.fastq.gz
+  - id: Naive_Renkema_RNA
+    group: Naive_Renkema
+    replicates:
+      - rep: 1
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR12054811_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR12054811_2.fastq.gz
+      - rep: 2
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR12054812_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR12054812_2.fastq.gz
+      - rep: 3
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR12054813_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR12054813_2.fastq.gz
+  - id: TexProg1_Beltra_RNA
+    group: TexProg1_Beltra
+    replicates:
+      - rep: 1
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR11687556_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR11687556_2.fastq.gz
+      - rep: 2
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR11687554_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR11687554_2.fastq.gz
+      - rep: 3
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR11687555_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR11687555_2.fastq.gz
+  - id: TexProg2_Beltra_RNA
+    group: TexProg2_Beltra
+    replicates:
+      - rep: 1
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR11687557_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR11687557_2.fastq.gz
+      - rep: 2
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR11687558_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR11687558_2.fastq.gz
+      - rep: 3
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR11687559_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR11687559_2.fastq.gz
+  - id: TexInt_Beltra_RNA
+    group: TexInt_Beltra
+    replicates:
+      - rep: 1
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR11687561_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR11687561_2.fastq.gz
+      - rep: 2
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR11687562_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR11687562_2.fastq.gz
+      - rep: 3
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR11687560_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR11687560_2.fastq.gz
+  - id: TexTerm_Beltra_RNA
+    group: TexTerm_Beltra
+    replicates:
+      - rep: 1
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR11687563_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR11687563_2.fastq.gz
+      - rep: 2
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR11687564_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR11687564_2.fastq.gz
+      - rep: 3
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR11687565_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR11687565_2.fastq.gz
+  - id: TexProg_Hudson_RNA
+    group: TexProg_Hudson
+    replicates:
+      - rep: 1
+        files:
+          - path: /home/cong/ncbi/public/sra/SRR8065107.fastq.gz
+      - rep: 2
+        files:
+          - path: /home/cong/ncbi/public/sra/SRR8065110.fastq.gz
+      - rep: 3
+        files:
+          - path: /home/cong/ncbi/public/sra/SRR8065114.fastq.gz
+  - id: TexInt_Hudson_RNA
+    group: TexInt_Hudson
+    replicates:
+      - rep: 1
+        files:
+          - path: /home/cong/ncbi/public/sra/SRR8065108.fastq.gz
+      - rep: 2
+        files:
+          - path: /home/cong/ncbi/public/sra/SRR8065117.fastq.gz
+      - rep: 3
+        files:
+          - path: /home/cong/ncbi/public/sra/SRR8065118.fastq.gz
+  - id: TexTerm_Hudson_RNA
+    group: TexTerm_Hudson
+    replicates:
+      - rep: 1
+        files:
+          - path: /home/cong/ncbi/public/sra/SRR8065109.fastq.gz
+      - rep: 2
+        files:
+          - path: /home/cong/ncbi/public/sra/SRR8065115.fastq.gz
+      - rep: 3
+        files:
+          - path: /home/cong/ncbi/public/sra/SRR8065116.fastq.gz
+  - id: Naive_Scott_RNA
+    group: Naive_Scott
+    replicates:
+      - rep: 1
+        files:
+          - path: /home/cong/ncbi/public/sra/SRR4435526.fastq.gz
+      - rep: 2
+        files:
+          - path: /home/cong/ncbi/public/sra/SRR4435527.fastq.gz
+      - rep: 3
+        files:
+          - path: /home/cong/ncbi/public/sra/SRR4435528.fastq.gz
+      - rep: 4
+        files:
+          - path: /home/cong/ncbi/public/sra/SRR4435529.fastq.gz
+ATAC-seq:
+  - id: MP_Milner_1_ATAC
+    group: MP_Milner_1
+    replicates:
+      - rep: 1
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR4435523_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR4435523_2.fastq.gz
+      - rep: 2
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR4435524_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR4435524_2.fastq.gz
+      - rep: 3
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR4435525_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR4435525_2.fastq.gz
+  - id: TE_Milner_1_ATAC
+    group: TE_Milner_1
+    replicates:
+      - rep: 1
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR4435520_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR4435520_2.fastq.gz
+      - rep: 2
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR4435521_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR4435521_2.fastq.gz
+      - rep: 3
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR4435522_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR4435522_2.fastq.gz
+  - id: MP_Milner_2_ATAC
+    group: MP_Milner_2
+    replicates:
+      - rep: 1
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/HKC11_S11_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/HKC11_S11_2.fastq.gz
+      - rep: 2
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/HKC12_S12_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/HKC12_S12_2.fastq.gz
+  - id: TE_Milner_2_ATAC
+    group: TE_Milner_2
+    replicates:
+      - rep: 1
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/HKC09_S9_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/HKC09_S9_2.fastq.gz
+      - rep: 2
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/HKC10_S10_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/HKC10_S10_2.fastq.gz
+  - id: Naive_Kaech_1_ATAC
+    group: Naive_Kaech_1
+    replicates:
+      - rep: 1
+        files:
+          - path: /home/cong/ncbi/public/sra/SRR6847151.fastq.gz
+      - rep: 2
+        files:
+          - path: /home/cong/ncbi/public/sra/SRR6847152.fastq.gz
+      - rep: 3
+        files:
+          - path: /home/cong/ncbi/public/sra/SRR6847153.fastq.gz
+  - id: MP_Kaech_1_ATAC
+    group: MP_Kaech_1
+    replicates:
+      - rep: 1
+        files:
+          - path: /home/cong/ncbi/public/sra/SRR6847188.fastq.gz
+      - rep: 2
+        files:
+          - path: /home/cong/ncbi/public/sra/SRR6847189.fastq.gz
+      - rep: 3
+        files:
+          - path: /home/cong/ncbi/public/sra/SRR6847190.fastq.gz
+  - id: TE_Kaech_1_ATAC
+    group: TE_Kaech_1
+    replicates:
+      - rep: 1
+        files:
+          - path: /home/cong/ncbi/public/sra/SRR6847202.fastq.gz
+      - rep: 2
+        files:
+          - path: /home/cong/ncbi/public/sra/SRR6847203.fastq.gz
+      - rep: 3
+        files:
+          - path: /home/cong/ncbi/public/sra/SRR6847204.fastq.gz
+  - id: Naive_Kaech_2_ATAC
+    group: Naive_Kaech_2
+    replicates:
+      - rep: 1
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/HKC01_S1_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/HKC01_S1_2.fastq.gz
+      - rep: 2
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/HKC02_S2_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/HKC02_S2_2.fastq.gz
+  - id: MP_Kaech_2_ATAC
+    group: MP_Kaech_2
+    replicates:
+      - rep: 1
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/HKC11_S11_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/HKC11_S11_2.fastq.gz
+      - rep: 2
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/HKC12_S12_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/HKC12_S12_2.fastq.gz
+  - id: TE_Kaech_2_ATAC
+    group: TE_Kaech_2
+    replicates:
+      - rep: 1
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/HKC09_S9_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/HKC09_S9_2.fastq.gz
+      - rep: 2
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/HKC10_S10_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/HKC10_S10_2.fastq.gz
+  - id: TRM_lung_A_ATAC
+    group: TRM_lung_A
+    replicates:
+      - rep: 1
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR9917152_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR9917152_2.fastq.gz
+      - rep: 2
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR9917153_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR9917153_2.fastq.gz
+      - rep: 3
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR9917154_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR9917154_2.fastq.gz
+      - rep: 4
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR9917155_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR9917155_2.fastq.gz
+      - rep: 5
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR9917156_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR9917156_2.fastq.gz
+      - rep: 6
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR9917157_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR9917157_2.fastq.gz
+  - id: TRM_lung_I_ATAC
+    group: TRM_lung_I
+    replicates:
+      - rep: 1
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR9917158_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR9917158_2.fastq.gz
+      - rep: 2
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR9917159_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR9917159_2.fastq.gz
+      - rep: 3
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR9917160_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR9917160_2.fastq.gz
+      - rep: 4
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR9917161_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR9917161_2.fastq.gz
+      - rep: 5
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR9917162_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR9917162_2.fastq.gz
+      - rep: 6
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR9917163_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR9917163_2.fastq.gz
+  - id: TRM_IEL_1_ATAC
+    group: TRM_IEL_1
+    replicates:
+      - rep: 1
+        files:
+          - path: /home/cong/ncbi/public/sra/SRR6324439.fastq.gz
+      - rep: 2
+        files:
+          - path: /home/cong/ncbi/public/sra/SRR6324440.fastq.gz
+  - id: TRM_IEL_2_ATAC
+    group: TRM_IEL_2
+    replicates:
+      - rep: 1
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/HKC19_S19_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/HKC19_S19_2.fastq.gz
+  - id: Naive_Mackay_ATAC
+    group: Naive_Mackay
+    replicates:
+      - rep: 1
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/HKC01_S1_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/HKC01_S1_2.fastq.gz
+      - rep: 2
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/HKC02_S2_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/HKC02_S2_2.fastq.gz
+  - id: TCM_Mackay_ATAC
+    group: TCM_Mackay
+    replicates:
+      - rep: 1
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/HKC13_S13_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/HKC13_S13_2.fastq.gz
+      - rep: 2
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/HKC14_S14_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/HKC14_S14_2.fastq.gz
+  - id: TEM_Mackay_ATAC
+    group: TEM_Mackay
+    replicates:
+      - rep: 1
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/HKC15_S15_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/HKC15_S15_2.fastq.gz
+      - rep: 2
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/HKC16_S16_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/HKC16_S16_2.fastq.gz
+  - id: TRM_liver_ATAC
+    group: TRM_liver
+    replicates:
+      - rep: 1
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/HKC17_S17_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/HKC17_S17_2.fastq.gz
+      - rep: 2
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/HKC18_S18_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/HKC18_S18_2.fastq.gz
+  - id: TEM_Milner_ATAC
+    group: TEM_Milner
+    replicates:
+      - rep: 1
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/HKC15_S15_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/HKC15_S15_2.fastq.gz
+      - rep: 2
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/HKC16_S16_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/HKC16_S16_2.fastq.gz
+  - id: TCM_Milner_ATAC
+    group: TCM_Milner
+    replicates:
+      - rep: 1
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/HKC13_S13_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/HKC13_S13_2.fastq.gz
+      - rep: 2
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/HKC14_S14_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/HKC14_S14_2.fastq.gz
+  - id: Naive_Milner_ATAC
+    group: Naive_Milner
+    replicates:
+      - rep: 1
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/HKC01_S1_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/HKC01_S1_2.fastq.gz
+      - rep: 2
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/HKC02_S2_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/HKC02_S2_2.fastq.gz
+  - id: TCM_Renkema_ATAC
+    group: TCM_Renkema
+    replicates:
+      - rep: 1
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/HKC13_S13_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/HKC13_S13_2.fastq.gz
+      - rep: 2
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/HKC14_S14_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/HKC14_S14_2.fastq.gz
+  - id: TEM_Renkema_ATAC
+    group: TEM_Renkema
+    replicates:
+      - rep: 1
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/HKC15_S15_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/HKC15_S15_2.fastq.gz
+      - rep: 2
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/HKC16_S16_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/HKC16_S16_2.fastq.gz
+  - id: Naive_Renkema_ATAC
+    group: Naive_Renkema
+    replicates:
+      - rep: 1
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/HKC01_S1_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/HKC01_S1_2.fastq.gz
+      - rep: 2
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/HKC02_S2_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/HKC02_S2_2.fastq.gz
+  - id: TexProg1_Beltra_ATAC
+    group: TexProg1_Beltra
+    replicates:
+      - rep: 1
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR11687540_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR11687540_2.fastq.gz
+      - rep: 2
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR11687539_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR11687539_2.fastq.gz
+  - id: TexProg2_Beltra_ATAC
+    group: TexProg2_Beltra
+    replicates:
+      - rep: 1
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR11687541_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR11687541_2.fastq.gz
+      - rep: 2
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR11687542_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR11687542_2.fastq.gz
+      - rep: 3
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR11687543_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR11687543_2.fastq.gz
+  - id: TexInt_Beltra_ATAC
+    group: TexInt_Beltra
+    replicates:
+      - rep: 1
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR11687544_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR11687544_2.fastq.gz
+      - rep: 2
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR11687546_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR11687546_2.fastq.gz
+      - rep: 3
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR11687545_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR11687545_2.fastq.gz
+  - id: TexTerm_Beltra_ATAC
+    group: TexTerm_Beltra
+    replicates:
+      - rep: 1
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR11687547_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR11687547_2.fastq.gz
+      - rep: 2
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR11687549_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR11687549_2.fastq.gz
+      - rep: 3
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR11687548_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR11687548_2.fastq.gz
+  - id: TexProg_Hudson_ATAC
+    group: TexProg_Hudson
+    replicates:
+      - rep: 1
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/HKC07_S7_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/HKC07_S7_2.fastq.gz
+      - rep: 2
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/HKC08_S8_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/HKC08_S8_2.fastq.gz
+  - id: TexInt_Hudson_ATAC
+    group: TexInt_Hudson
+    replicates:
+      - rep: 1
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/HKC05_S5_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/HKC05_S5_2.fastq.gz
+      - rep: 2
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/HKC06_S6_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/HKC06_S6_2.fastq.gz
+  - id: TexTerm_Hudson_ATAC
+    group: TexTerm_Hudson
+    replicates:
+      - rep: 1
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/HKC03_S3_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/HKC03_S3_2.fastq.gz
+      - rep: 2
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/HKC04_S4_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/HKC04_S4_2.fastq.gz
+  - id: Naive_Scott_ATAC
+    group: Naive_Scott
+    replicates:
+      - rep: 1
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR4435505_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR4435505_2.fastq.gz
+      - rep: 2
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR4435506_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR4435506_2.fastq.gz
+      - rep: 3
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR4435507_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR4435507_2.fastq.gz
+      - rep: 4
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR4435508_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR4435508_2.fastq.gz
+      - rep: 5
+        files:
+          - pair:
+            - path: /home/cong/ncbi/public/sra/SRR4435509_1.fastq.gz
+            - path: /home/cong/ncbi/public/sra/SRR4435509_2.fastq.gz
