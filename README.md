@@ -24,6 +24,15 @@ Major update of Taiji with enhanced downstream analysis, featuring:
 
 <img src="https://github.com/cong-003/Taiji2/blob/main/figures/summary_fig.png" width="800">
 
+## Instructions
+### run Taiji pipeline for paired RNA-seq and ATAC-seq data
+First install Taiji. Check [Taiji github](https://taiji-pipeline.github.io/)
+```bash
+curl -L https://github.com/Taiji-pipeline/Taiji/releases/latest/download/taiji-CentOS-x86_64 -o taiji
+chmod +x taiji
+./taiji --help
+```
+
 
 ## Resources
 - website:
