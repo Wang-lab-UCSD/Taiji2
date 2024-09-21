@@ -22,7 +22,7 @@ knitr::opts_chunk$set(echo = TRUE)
 suppressMessages(library(data.table))
 suppressMessages(library(ggplot2))
 suppressMessages(library(dplyr))
-suppressMessages(library(xlsx))
+# suppressMessages(library(xlsx))
 suppressMessages(library(pheatmap))
 suppressMessages(library(RColorBrewer))
 
@@ -98,6 +98,7 @@ get_heatmap(Data_normed_3[housekeeping,], cluster_rows=F, size = 5)
 ```
 
 # identify cell state-specific TFs
+
 First we divided the samples into two groups: target group and background group. Target group included all the samples belonging to the cell state of interest and the background group comprised the remaining samples. Unpaired t-test was used to calculate the P-value. A P-value cutoff of 0.05 and log2 fold change cutoff of 0.5 were used for calling cell state-specific TFs.
 
 ```{r}
@@ -131,6 +132,7 @@ ps <- lapply(names(tfs), function(x) {
 ```
 
 # identify multi-taskers and single-taskers
+
 Multi-taskers are TFs appearing in multiple cell states. Single-taskers are TFs only identified in single cell state.
 
 ```{r}
@@ -155,11 +157,27 @@ annotation_row %>% filter(subsets!="MultiTasker") %>% rownames() %>% writeLines(
 ```
 
 ## heatmap of multi-taskers and single-taskers
-Heatmap for multi-taskers:
+
+First, we plot the heatmap for all multi-taskers:
+
 ```{r, fig.width=8, fig.height=12}
 df_multi <- Data_normed_3[readLines('MultiTasker_TFs.txt'),]
 p1 <- get_heatmap(df_multi, size=5)
 ```
+
+
+Then, we group the multi-taskers into five groups as shown in main figure:
+
+1.  shared in T cell states from acute infection
+2.  shared in T cell states from chronic infection
+3.  TRM and TEXterm
+4.  early cell states: MP, TE, TEXprog, and TEXeff
+5.  stem cell like state: Naive, memory, and TEXprog
+
+
+### detailed grouping of multi-taskers
+
+## heatmap of single-taskers
 
 Heatmap for single-taskers:
 
@@ -169,6 +187,7 @@ p1 <- get_heatmap(df_sgl, size=5)
 ```
 
 # identification of TRM-specific and TEXterm-specific TFs
+
 As described in Extended Data Fig.3a, we first curated a candiate list including TFs in TexTerm and TRM-TFs identified in cell-state-specific step. Then we performed unpaired t-test. The target group is TexTerm/TRM while the background is TRM/TexTerm.
 
 ```{r}
