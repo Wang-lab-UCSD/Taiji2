@@ -27,12 +27,19 @@ Major update of Taiji with enhanced downstream analysis, featuring:
 ## Instructions
 ### run Taiji pipeline for paired RNA-seq and ATAC-seq data
 First install Taiji. Check [Taiji github](https://taiji-pipeline.github.io/)
+
 ```bash
 curl -L https://github.com/Taiji-pipeline/Taiji/releases/latest/download/taiji-CentOS-x86_64 -o taiji
 chmod +x taiji
 ./taiji --help
 ```
+Then prepare configure file and input file following instructions in [Taiji website](https://taiji-pipeline.github.io/)
 
+```bash
+taiji run --config config.yml -n 3 +RTS -N3
+```
+
+To replicate the paper's results, use the configure file and input file in this repo.
 
 ## Resources
 - website:
