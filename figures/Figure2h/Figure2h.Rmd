@@ -33,6 +33,10 @@ setwd(this.path::here())
 
 Calculate the gene set enrichment of exhausted T cells vs. TRM in LCMV bulk RNA-seq and Pan Cancer scRNA-seq datasets. This analysis focuses on gene sets corresponding to biologically relevant GO terms like protein stability and leukocyte cell-cell adhesion. Subsets of these gene sets are taken by intersecting them with the TF communities from Taiji.
 
+inputs: custom_gene_sets from SubGenesets_TRM_TEX_TFcommunity_20240419.csv, Seurat object from Pancancer_CD8_simple_7cluster_220518.rds for the Pan Cancer analysis, and bulk RNA-seq counts from Taiji_counts_matrix.tsv for the LCMV analysis.
+
+outputs: dot plot comparing GSEA results of Pan Cancer vs. LCMV for the queried GO subsets
+
 First, we will initialize the gene sets to be queried:
 
 ```{r initialization}

@@ -408,6 +408,13 @@ focuses on gene sets corresponding to biologically relevant GO terms
 like protein stability and leukocyte cell-cell adhesion. Subsets of
 these gene sets are taken by intersecting them with the TF communities
 from Taiji.</p>
+<p>inputs: custom_gene_sets from
+SubGenesets_TRM_TEX_TFcommunity_20240419.csv, Seurat object from
+Pancancer_CD8_simple_7cluster_220518.rds for the Pan Cancer analysis,
+and bulk RNA-seq counts from Taiji_counts_matrix.tsv for the LCMV
+analysis.</p>
+<p>outputs: dot plot comparing GSEA results of Pan Cancer vs. LCMV for
+the queried GO subsets</p>
 <p>First, we will initialize the gene sets to be queried:</p>
 <pre class="r"><code>GO_term_to_description = list(GO_term = c(&quot;GO:0031331&quot;, &quot;GO:0031647&quot;,   &quot;GO:1903052&quot;,   &quot;GO:0043161&quot;,   &quot;GO:0061919&quot;,   &quot;GO:0097193&quot;,   &quot;GO:0032623&quot;,   &quot;GO:0032743&quot;,   &quot;GO:0032663&quot;,   &quot;GO:0071559&quot;,   &quot;GO:0007015&quot;,   &quot;GO:2000112&quot;,   &quot;GO:0043087&quot;,   &quot;GO:0007159&quot;),
                               Description = c(&#39;Catabolism&#39;, &#39;Protein stability&#39;, &#39;Proteolysis&#39;, &#39;UPS&#39;, &#39;Autophagy&#39;, &#39;Intrinsic apoptosis&#39;, &#39;IL-2 production&#39;, &#39;Pos. reg. of IL-2 production&#39;, &#39;Reg. of IL-2 production&#39;, &#39;TGF-Beta&#39;, &#39;Actin&#39;, &#39;Reg. of cellular macromolecule biosynthetic process&#39;, &#39;Reg. of GTPase activity&#39;, &#39;Leukocyte cell-cell adhesion&#39;))

@@ -8,7 +8,6 @@ date: "2024-09-19"
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-
 ```{r import packages}
 library(Seurat)
 library(pheatmap)
@@ -30,7 +29,12 @@ library(this.path)
 setwd(this.path::here())
 ```
 
-Use Seurat's AddModuleScore(.) to score the TRM up and down signatures for the gRNA knockouts in both the Armstrong and Clone 13 LCMV gRNA knockout experiments. First, declare the function used to calculate the module scores, as well as a few auxiliary functions:
+# Scoring TRM up and down CD8+ T cell type signatures for the gRNA knockouts in the Clone 13 and Armstrong LCMV experiments
+
+Use Seurat's AddModuleScore(.) to score the TRM up and down signatures for the gRNA knockouts in both the Armstrong and Clone 13 LCMV gRNA knockout experiments. First, declare the function used to calculate the module scores, as well as a few auxiliary functions.
+
+-   inputs: Seurat objects from Cl13_23TP04_20231010.rds and TP16_Arm_clean_simpler4clustersn_20231020.rds; custom_gene_sets from Signature1.TRM.csv. All other inputs are declared in this file.
+-   outputs: module scores for Clone 13 and Armstrong gRNA experiments stored at Fig4f.Cl13.ModScores.RdBu.offset.none.csv and Fig4f.Arm.ModScores.RdBu.offset.none.csv. Composite figure comparing TRM up and down signatures stored at Fig4f.Arm+Cl13.ModScores.offset.scale_all.pdf.
 
 ```{r declare functions}
 ModuleScores = function(sobj, query_guides, ctrl_guides, custom_gene_sets, gene_set_order, gRNA_order, signature_groups, gaps_col, gaps_row, scale_max=NULL) {
@@ -199,7 +203,7 @@ res = list()
 
 for (args in args_ls) {
   res[[args$tag]] = ModuleScores(args$sobj, query_guides, ctrl_guides, custom_gene_sets, gene_set_order, gRNA_order, signature_groups, gaps_col, gaps_row)
-  write.csv(res[[args$tag]]$mtx, paste0('Fig3J.', args$tag, '.ModScores.RdBu.offset.none.csv'), row.names = TRUE)
+  write.csv(res[[args$tag]]$mtx, paste0('Fig4f.', args$tag, '.ModScores.RdBu.offset.none.csv'), row.names = TRUE)
 }
 ```
 
@@ -231,6 +235,6 @@ grob1$widths[[5]] = unit(0, 'cm')
 grob1$widths[[4]] = unit(0.5, 'cm')
 
 combined_grob = gtable_cbind(grob1, grob2, size = "first")
-save_grob_pdf(combined_grob, paste0('Fig3J.Arm+Cl13.ModScores.', 'offset.scale_all.pdf'), height=4, width=12)
+save_grob_pdf(combined_grob, paste0('Fig4f.Arm+Cl13.ModScores.', 'offset.scale_all.pdf'), height=4, width=12)
 plot(combined_grob)
 ```
