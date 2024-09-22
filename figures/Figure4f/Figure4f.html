@@ -399,6 +399,10 @@ library(tidyr)</code></pre>
 library(this.path)
 
 setwd(this.path::here())</code></pre>
+<p>Use Seurat’s AddModuleScore(.) to score the TRM up and down
+signatures for the gRNA knockouts in both the Armstrong and Clone 13
+LCMV gRNA knockout experiments. First, declare the function used to
+calculate the module scores, as well as a few auxiliary functions:</p>
 <pre class="r"><code>ModuleScores = function(sobj, query_guides, ctrl_guides, custom_gene_sets, gene_set_order, gRNA_order, signature_groups, gaps_col, gaps_row, scale_max=NULL) {
   sobj = sobj[, (sobj@meta.data$guide_ID %in% query_guides) | (sobj@meta.data$perturbed_gene == &#39;gScramble&#39;)] 
   
@@ -519,6 +523,8 @@ CompositeTransform = function(mtx1, mtx2) {
   
   return(list(norm_mtx1=norm_mtx1, norm_mtx2=norm_mtx2))
 }</code></pre>
+<p>Next, calculate Module Scores for the gRNA knockouts in the Armstrong
+and Clone 13 LCMV experiments:</p>
 <pre class="r"><code>signatures = read.csv(&#39;Signature1.TRM.csv&#39;, header=FALSE)</code></pre>
 <pre><code>## Warning in read.table(file = file, header = header, sep = sep, quote = quote, :
 ## incomplete final line found by readTableHeader on &#39;Signature1.TRM.csv&#39;</code></pre>
@@ -565,6 +571,8 @@ for (args in args_ls) {
 ## `.groups` argument.
 ## `summarise()` has grouped output by &#39;GeneSet&#39;. You can override using the
 ## `.groups` argument.</code></pre>
+<p>Finally, create a composite figure to visualize the signature
+scores:</p>
 <pre class="r"><code>fig = list()
 #gRNA_order = c(&#39;gScramble&#39;, gRNA_order)
 

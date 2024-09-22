@@ -30,6 +30,7 @@ library(this.path)
 setwd(this.path::here())
 ```
 
+Use Seurat's AddModuleScore(.) to score the TRM up and down signatures for the gRNA knockouts in both the Armstrong and Clone 13 LCMV gRNA knockout experiments. First, declare the function used to calculate the module scores, as well as a few auxiliary functions:
 
 ```{r declare functions}
 ModuleScores = function(sobj, query_guides, ctrl_guides, custom_gene_sets, gene_set_order, gRNA_order, signature_groups, gaps_col, gaps_row, scale_max=NULL) {
@@ -154,6 +155,8 @@ CompositeTransform = function(mtx1, mtx2) {
 }
 ```
 
+Next, calculate Module Scores for the gRNA knockouts in the Armstrong and Clone 13 LCMV experiments:
+
 ```{r set up inputs}
 signatures = read.csv('Signature1.TRM.csv', header=FALSE)
 gene_set_order = c('TRM_Up', 'TRM_Down')
@@ -199,6 +202,8 @@ for (args in args_ls) {
   write.csv(res[[args$tag]]$mtx, paste0('Fig3J.', args$tag, '.ModScores.RdBu.offset.none.csv'), row.names = TRUE)
 }
 ```
+
+Finally, create a composite figure to visualize the signature scores:
 
 ```{r create composite figure}
 fig = list()

@@ -27,6 +27,25 @@ setwd(this.path::here())
 ```
 
 
+# Calculation of heuristic regulatory scores
+
+The purpose of this code is to integrate perturb-seq and Taiji data to calculate a score representing TF-gene regulatory strength. This is taken to be a simple multiplication of the TF-gene edge weight, as outputted by Taiji, with the -log2FC of expression for the TF knockout vs. the gScramble control. The underlying hypothesis here is that regulated genes are likely to (1) have evidence of physical binding (the edge weight) and (2) exhibit changes in expression due to the knockout of the regulating TF.
+
+ProcessRegulatees:
+
+inputs:
+- edge_weights_fname: file name for Taiji edge weights
+- obj_fname: file name for perturb-seq Seurat object
+- cell_type_taiji: query cell type from the edge weights file
+- cell_type_seurat query cell type from the Seurat object (optional)
+- gRNAs: gRNAs to query for visualization.
+
+outputs:
+- heuristic_scores: -log2FC*edge_weight; calculated for each TF-gene pair
+- log2FC_scores: log2FC of TF KO vs. gScramble control for each gene
+- edge_weight_scores: edge weights from edge_weights_fname for each TF-gene pair
+- high_conf_regulatees: regulatees/genes that had edge weights in the top 25% quantile for a given TF with a |logFC| > 0.58
+
 ```{r declare function for calculating heuristic regulatory scores}
 ProcessRegulatees = function(edge_weights_fname, sobj_fname, cell_type_taiji, cell_type_seurat, gRNAs) {
   tmp = read.csv('kmeans_cluster_k_16_log2FC_btw_TEX_and_TRM_mean_edge_weight_top500_subset_TFs_v2_v2_ordered_by_group.csv')[-1]
@@ -44,7 +63,6 @@ ProcessRegulatees = function(edge_weights_fname, sobj_fname, cell_type_taiji, ce
   # remove gRNAs w/very low counts from query
   for (perturbed_gene in perturbed_genes) {
     N = length(Cells(sobj[, sobj$perturbed_gene == perturbed_gene]))
-    print(c(perturbed_gene, N))
     if (N < 3) {
       perturbed_genes = perturbed_genes[perturbed_genes != perturbed_gene]
     }
@@ -111,6 +129,7 @@ ProcessRegulatees = function(edge_weights_fname, sobj_fname, cell_type_taiji, ce
 }
 ```
 
+Now that the function is defined, calculate heuristic regulatory scores for the CD8+ terminally exhausted (LCMV Clone 13) and TRM (LCMC Armstrong) cell types.
 
 ```{r calculate heuristic scores for Cl13 & Armstrong LCMV}
 # higher dynamic range KOs
@@ -147,6 +166,7 @@ edge_weight_scores[['TRM']] = res$edge_weight_scores
 high_conf_regulatees[['TRM']] = res$high_conf_regulatees
 ```
 
+Given the heuristic regulatory scores, we can quantify the genes (regulatees) that exhibit flipped directions of regulation between the LCMV Clone 13 (TExTerm) and Armstrong (TRM).
 
 ```{r identify regulatees that change regulatory direction for each TF}
 ### Quantify changes in TF-gene regulation direction between TRM and TexTerm ###
@@ -184,6 +204,7 @@ for (TF in shared_TFs) {
 }
 ```
 
+Finally, visualize the specific TF-regulatee heuristic scores shown in extended Figure 8c.
 
 ```{r visualize specific TF-regulatee heuristic scores}
 # All flipped TF-regulatee pairs for TexTerm vs. TRM comparison

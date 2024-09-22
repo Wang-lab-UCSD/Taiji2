@@ -29,6 +29,12 @@ library(this.path)
 setwd(this.path::here())
 ```
 
+# GSEA of exhausted vs. resident memory CD8+ T cells in LCMV and Pan Cancer
+
+Calculate the gene set enrichment of exhausted T cells vs. TRM in LCMV bulk RNA-seq and Pan Cancer scRNA-seq datasets. This analysis focuses on gene sets corresponding to biologically relevant GO terms like protein stability and leukocyte cell-cell adhesion. Subsets of these gene sets are taken by intersecting them with the TF communities from Taiji.
+
+First, we will initialize the gene sets to be queried:
+
 ```{r initialization}
 GO_term_to_description = list(GO_term = c("GO:0031331",	"GO:0031647",	"GO:1903052",	"GO:0043161",	"GO:0061919",	"GO:0097193",	"GO:0032623",	"GO:0032743",	"GO:0032663",	"GO:0071559",	"GO:0007015",	"GO:2000112",	"GO:0043087",	"GO:0007159"),
                               Description = c('Catabolism', 'Protein stability', 'Proteolysis', 'UPS', 'Autophagy', 'Intrinsic apoptosis', 'IL-2 production', 'Pos. reg. of IL-2 production', 'Reg. of IL-2 production', 'TGF-Beta', 'Actin', 'Reg. of cellular macromolecule biosynthetic process', 'Reg. of GTPase activity', 'Leukocyte cell-cell adhesion'))
@@ -49,7 +55,7 @@ custom_gene_sets = lapply(custom_gene_sets, function (x) x[x != "NA"])
 gene_set_order = names(custom_gene_sets)
 ```
 
-##### MAIN
+Perform GSEA for exhausted (Tex) CD8+ T cells vs. resident memory (TRM)
 
 ```{r PanCancer scRNA-seq GSEA}
 sobj = readRDS('Pancancer_CD8_simple_7cluster_220518.rds')
@@ -81,7 +87,9 @@ rownames(tmp_df) = NULL
 tmp_df1 = tmp_df
 ```
 
-```{r LCMV scRNA-seq GSEA}
+Next, perform GSEA for the LCMV bulk RNA-seq datasets used in the Taiji analysis.
+
+```{r LCMV RNA-seq GSEA}
 library(edgeR)
 
 cts_mtx = read.csv('Taiji_counts_matrix.tsv', sep='\t', row.names=1)
@@ -136,6 +144,8 @@ rownames(tmp_df) = NULL
 
 tmp_df2 = tmp_df
 ```
+
+Now combine the results from both GSEAs into a single composite figure:
 
 ```{r Composite dot plot of GSEA results, echo=FALSE}
 combined_df = rbind(tmp_df1, tmp_df2)
