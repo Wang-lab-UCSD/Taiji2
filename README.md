@@ -81,8 +81,11 @@ Next, we visualized the TF communities following the [tutorial](https://rpubs.co
 
 Functional analysis can be performed as well. Check the [tutorial](https://rpubs.com/cong003/1216075) and raw [code](https://github.com/Wang-lab-UCSD/Taiji2/blob/main/figures/Fig6/community_analysis.Rmd)
 
-
 #### perturb-seq analysis
+
+Heuristic regulatory scores can be calculated by combining perturb-seq data with the TF-gene edge weights extracted by Taiji. Check out the [tutorial](https://rpubs.com/ajambor/1222455) and [raw code](https://github.com/Wang-lab-UCSD/Taiji2/blob/main/figures/ExtendedFigure8c/ExtendedFigure8c.R).
+
+GSEA and module score calculations were also perform to analyze perturb-seq data. See the following tutorials: [Figure 2h](https://rpubs.com/ajambor/1222430), [Figure 3i](https://rpubs.com/ajambor/1222436), and [Figure 4f](https://rpubs.com/ajambor/1222444)
     
 ## Resources
 
