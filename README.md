@@ -1,6 +1,8 @@
 # Taiji2
 
-Major update of Taiji with enhanced downstream analysis, featuring: - Cell-state specificity analysis
+Major update of Taiji with enhanced downstream analysis, featuring: 
+
+-   Cell-state specificity analysis
 
 -   TF’s edgeweight per locus calculation
 
@@ -10,7 +12,7 @@ Major update of Taiji with enhanced downstream analysis, featuring: - Cell-state
 
 -   TF-TF interaction network
 
--   Perturb seq integration/heuristic score calculation (additional input required).
+-   Perturb seq integration/heuristic score calculation.
 
 
 <img src="https://github.com/cong-003/Taiji2/blob/main/figures/summary_fig.png" width="800"/>
