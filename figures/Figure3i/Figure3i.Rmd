@@ -28,6 +28,8 @@ library(this.path)
 setwd(this.path::here())
 ```
 
+Use Seurat's AddModuleScore(.) to score the TExTerm, TExEff, TE, Ca, TExProg, and Naive signatures for the gRNA knockouts in Clone 13 LCMV experiment. First, declare the function used to calculate the module scores:
+
 ```{r declare functions}
 ModuleScores = function(sobj, query_guides, ctrl_guides, custom_gene_sets, gene_set_order, gRNA_order) {
   sobj = sobj[, (sobj@meta.data$guide_ID %in% query_guides) | (sobj@meta.data$perturbed_gene == 'gScramble')] 
@@ -99,6 +101,8 @@ save_pheatmap_pdf = function(x, filename, width=NULL, height=NULL) {
   dev.off()
 }
 ```
+
+Next, calculate the module scores for the TExTerm, TExEff, TE, Ca, TExProg, and Naive signatures:
 
 ```{r run module score calculation}
 sobj = readRDS('Cl13_23TP04_20231010.rds') # 7538 cells x 32285 genes (2000 var.); gScramble-2, gScramble-4

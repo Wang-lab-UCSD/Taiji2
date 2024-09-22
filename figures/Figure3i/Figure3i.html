@@ -398,6 +398,10 @@ library(tidyr)</code></pre>
 <pre class="r"><code>library(this.path)
 
 setwd(this.path::here())</code></pre>
+<p>Use Seurat’s AddModuleScore(.) to score the TExTerm, TExEff, TE, Ca,
+TExProg, and Naive signatures for the gRNA knockouts in Clone 13 LCMV
+experiment. First, declare the function used to calculate the module
+scores:</p>
 <pre class="r"><code>ModuleScores = function(sobj, query_guides, ctrl_guides, custom_gene_sets, gene_set_order, gRNA_order) {
   sobj = sobj[, (sobj@meta.data$guide_ID %in% query_guides) | (sobj@meta.data$perturbed_gene == &#39;gScramble&#39;)] 
   
@@ -467,6 +471,8 @@ save_pheatmap_pdf = function(x, filename, width=NULL, height=NULL) {
   print(x)
   dev.off()
 }</code></pre>
+<p>Next, calculate the module scores for the TExTerm, TExEff, TE, Ca,
+TExProg, and Naive signatures:</p>
 <pre class="r"><code>sobj = readRDS(&#39;Cl13_23TP04_20231010.rds&#39;) # 7538 cells x 32285 genes (2000 var.); gScramble-2, gScramble-4
 query_guides = read.csv(&#39;query-guides.Cl13.csv&#39;, header=FALSE)$V1
 gRNA_order = c(&quot;gNfatc1&quot;, &quot;gStat3&quot;, &quot;gPrdm1&quot;, &quot;gJdp2&quot;, &quot;gIkzf3&quot;, &quot;gHic1&quot;, &quot;gZbtb49&quot;, &quot;gNr4a2&quot;, &quot;gNfil3&quot;, &quot;gZfp324&quot;, &quot;gIrf8&quot;, &quot;gPrdm4&quot;, &quot;gZscan20&quot;, &quot;gFoxd2&quot;, &quot;gEtv5&quot;, &quot;gGfi1&quot;, &quot;gArid3a&quot;, &quot;gHinfp&quot;)
