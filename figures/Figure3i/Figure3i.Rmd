@@ -28,6 +28,13 @@ library(this.path)
 setwd(this.path::here())
 ```
 
+# Scoring different CD8+ T cell type signatures for the gRNA knockouts in the Clone 13 LCMV experiment
+
+Use Seurat's AddModuleScore(.) to score the TExTerm, TExEff, TE, Ca, TExProg, and Naive signatures for the gRNA knockouts in Clone 13 LCMV experiment. First, declare the function used to calculate the module scores:
+
+-   inputs: Seurat object from Cl13_23TP04_20231010.rds, custom_gene_sets from Signature1.subset.csv, query_guides from query-guides.Cl13.csv. All other inputs are declared in this file.
+-   outputs: module scores for Clone 13 gRNA experiments stored at Fig3I.Cl13.ModScores.RdBu.offset.none.csv. Figure comparing signature scores stored at Fig3I.Cl13.ModScores.RdBu.offset.none.pdf.
+
 ```{r declare functions}
 ModuleScores = function(sobj, query_guides, ctrl_guides, custom_gene_sets, gene_set_order, gRNA_order) {
   sobj = sobj[, (sobj@meta.data$guide_ID %in% query_guides) | (sobj@meta.data$perturbed_gene == 'gScramble')] 
@@ -100,6 +107,8 @@ save_pheatmap_pdf = function(x, filename, width=NULL, height=NULL) {
 }
 ```
 
+Next, calculate the module scores for the TExTerm, TExEff, TE, Ca, TExProg, and Naive signatures:
+
 ```{r run module score calculation}
 sobj = readRDS('Cl13_23TP04_20231010.rds') # 7538 cells x 32285 genes (2000 var.); gScramble-2, gScramble-4
 query_guides = read.csv('query-guides.Cl13.csv', header=FALSE)$V1
@@ -127,9 +136,7 @@ res = ModuleScores(sobj, query_guides, ctrl_guides, custom_gene_sets, gene_set_o
 fig = res$heatmap
 mtx = res$mtx
 
-write.csv(mtx, 'Fig2I.Cl13.ModScores.RdBu.offset.none.csv', row.names = TRUE)
-save_pheatmap_pdf(fig, 'Fig2I.Cl13.ModScores.RdBu.offset.none.pdf')
+write.csv(mtx, 'Fig3I.Cl13.ModScores.RdBu.offset.none.csv', row.names = TRUE)
+save_pheatmap_pdf(fig, 'Fig3I.Cl13.ModScores.RdBu.offset.none.pdf')
 fig
 ```
-
-
