@@ -94,19 +94,34 @@ writeLines(housekeeping, 'housekeeping_top01_CV05.txt')
 ## heatmap of non-specific TFs
 
 ```{r, fig.width=10, fig.height=8}
-get_heatmap(Data_normed_3[housekeeping,], cluster_rows=F, size = 5) 
+p <- get_heatmap(Data_normed_3[housekeeping,], cluster_rows=F, size = 5) 
 ```
+
+```{r}
+# write to file
+pdf(paste0('hp_',length(housekeeping),'_non_specific_TFs.pdf'))
+print(p)
+dev.off()
+```
+
 
 # identify cell state-specific TFs
 
-First we divided the samples into two groups: target group and background group. Target group included all the samples belonging to the cell state of interest and the background group comprised the remaining samples. Unpaired t-test was used to calculate the P-value. A P-value cutoff of 0.05 and log2 fold change cutoff of 0.5 were used for calling cell state-specific TFs.
+First we divided the samples into two groups: target group and background group. Target group included all the samples belonging to the cell state of interest and the background group comprised the remaining samples. Unpaired t-test was used to calculate the P-value. A P-value cutoff of 0.05 and log2 fold change cutoff of 0.5 were used for calling cell state-specific TFs. Then we kept those TFs with non-zero expression values in more than 20% of the cells in the target group.
 
 ```{r}
 # load meta file
 group_sorted <- read.table('group_file_v2.txt',header = T, row.names = 1)
 group_sorted$oldName <- rownames(group_sorted)
 rownames(group_sorted) <- group_sorted$newName
+```
 
+```{r}
+## import rna-seq data
+rna_seq <- read.csv('rna_expr_TFs.csv', row.names = 1)
+```
+
+```{r}
 n <- which(group_sorted[["Group"]]=="TexTerm")
 # identification
 tfs <- lapply(unique(group_sorted$Group),
@@ -114,7 +129,9 @@ tfs <- lapply(unique(group_sorted$Group),
              pr <- Data[!(row.names(Data) %in% housekeeping),]
              n <- which(group_sorted[["Group"]]==x)
              x <- unpairedtTest(pr,n,p=0.05,d=0.5)
-             rownames(x)
+             t <- rownames(x)
+             t <- t[unlist(lapply(t, function(x) sum(rna_seq[x, n]>0) >= ceiling(0.2*length(n))))]
+             
             }) 
 names(tfs) <- unique(group_sorted$Group)
 ```
@@ -127,20 +144,23 @@ From top to bottom, they're Naive, MP, TE, TCM, TEM, TRM, TexProg, TexInt, and T
 ps <- lapply(names(tfs), function(x) {
   annotation_row <- data.frame("subsets"=rep(x,length(tfs[[x]])))
   rownames(annotation_row) <- tfs[[x]]
-  get_heatmap(df=Data_normed_3[rownames(annotation_row),], cluster_rows=F, annotation_row=annotation_row, size = 5) 
+  p <-get_heatmap(df=Data_normed_3[rownames(annotation_row),], cluster_rows=F, annotation_row=annotation_row, size = 5) 
+  pdf(paste0('hp_',nrow(annotation_row),'_',x,'_TFs.pdf'))
+  print(p)
+  dev.off()
 })
 ```
 
-# identify multi-taskers and single-taskers
+# identify multi-states specific TFs and single-state specific TFs
 
-Multi-taskers are TFs appearing in multiple cell states. Single-taskers are TFs only identified in single cell state.
+Multi-state specific TFs are identified in multiple cell states. Single-state specific TFs are only identified in single cell state.
 
 ```{r}
 getRowAnnotation <- function(TFs){
   tmp <- unlist(TFs)
   redundants <- unname(tmp[duplicated(tmp)])
   uniques <- unname(tmp[!duplicated(tmp)])
-  tmp2 <- tibble("subsets" = "MultiTasker","TFs"=unique(redundants))
+  tmp2 <- tibble("subsets" = "multi","TFs"=unique(redundants))
   annotation_row <- tibble("subsets" = unlist(lapply(1:length(TFs), function(x) {rep(names(TFs[x]), length(TFs[[x]]))})),
                            "TFs" = unlist(TFs)) %>% 
     filter(TFs %in% setdiff(uniques, redundants)) %>%
@@ -152,38 +172,39 @@ getRowAnnotation <- function(TFs){
 annotation_row <- getRowAnnotation(tfs)
 
 breaksList = seq(-2, 2, by = 0.1)
-annotation_row %>% filter(subsets=="MultiTasker") %>% rownames() %>% writeLines('MultiTasker_TFs.txt')
-annotation_row %>% filter(subsets!="MultiTasker") %>% rownames() %>% writeLines('SingleTasker_TFs.txt')
+annotation_row %>% filter(subsets=="multi") %>% rownames() %>% writeLines('multi_TFs.txt')
+annotation_row %>% filter(subsets!="multi") %>% rownames() %>% writeLines('single_TFs.txt')
 ```
 
-## heatmap of multi-taskers and single-taskers
-
-First, we plot the heatmap for all multi-taskers:
+## heatmap of multi-state specific TFs
 
 ```{r, fig.width=8, fig.height=12}
-df_multi <- Data_normed_3[readLines('MultiTasker_TFs.txt'),]
+df_multi <- Data_normed_3[readLines('multi_TFs.txt'),]
 p1 <- get_heatmap(df_multi, size=5)
+
+## write to file
+pdf(paste0('hp_',nrow(df_multi),'_multi_TFs.pdf'), width = 8, height=12)
+print(p1)
+dev.off()
 ```
 
 
-Then, we group the multi-taskers into five groups as shown in main figure:
-
-1.  shared in T cell states from acute infection
-2.  shared in T cell states from chronic infection
-3.  TRM and TEXterm
-4.  early cell states: MP, TE, TEXprog, and TEXeff
-5.  stem cell like state: Naive, memory, and TEXprog
-
-
-### detailed grouping of multi-taskers
-
-## heatmap of single-taskers
-
-Heatmap for single-taskers:
+## heatmap of single-state specific TFs
 
 ```{r, fig.width=8, fig.height=12}
-df_sgl <- Data_normed_3[readLines('SingleTasker_TFs.txt'),]
-p1 <- get_heatmap(df_sgl, size=5)
+df_sgl <- Data_normed_3[readLines('single_TFs.txt'),]
+
+# add gap between cell state groups
+annotation_row_single <- annotation_row |> filter(subsets!='multi')
+last_element_per_group <- aggregate(rownames(annotation_row_single), by=list(annotation_row_single$subsets), FUN=tail, n=1) |> pull(x)
+gaps <- sort(unlist(lapply(last_element_per_group, function(x) which(x==rownames(df_sgl)))))
+
+p1 <- get_heatmap(df_sgl, size=5, gaps_row = gaps, cluster_rows=F, annotation_row = annotation_row_single)
+
+## write to file
+pdf(paste0('hp_',nrow(df_sgl),'_single_TFs.pdf'), width = 8, height=12)
+print(p1)
+dev.off()
 ```
 
 # identification of TRM-specific and TEXterm-specific TFs
@@ -194,6 +215,7 @@ As described in Extended Data Fig.3a, we first curated a candiate list including
 # manually select background samples
 group2 <- group_sorted[grepl("TRM|TexTerm",group_sorted$Group),]
 candidates <- union(tfs[['TexTerm']], tfs[['TRM']])
+multi_state_tfs <- intersect(tfs[['TexTerm']], tfs[['TRM']])
 tfs2 <- lapply(unique(group2$Group),
             function(x) {
              pr <- Data[candidates,rownames(group2)]
@@ -202,41 +224,56 @@ tfs2 <- lapply(unique(group2$Group),
              rownames(x)
             })
 names(tfs2) <- unique(group2$Group)
-common_tfs <- setdiff(candidates, unlist(tfs2))
+
+common_tfs <- union(setdiff(candidates, unlist(tfs2)),multi_state_tfs)
+tex_tfs <- setdiff(tfs2[['TexTerm']], common_tfs)
+trm_tfs <- setdiff(tfs2[['TRM']], common_tfs)
 ```
 
 ## bubble visualization for TRM and TEXterm TFs
-
-```{r}
-## import rna-seq data
-rna_seq <- read.csv('rna_expr_TFs.csv', row.names = 1)
-```
-
 TFs that most active in TEXterm
 
-```{r, fig.width=4, fig.height=8}
-plot(bubble(tfs2[['TexTerm']],
-            log2(rna_seq+1)[tfs2[['TexTerm']],rownames(group2)],
-            Data_normed_3[tfs2[['TexTerm']],rownames(group2)]
-))
+```{r, fig.width=5, fig.height=10}
+# reorganize TFs by the p-value significance
+t <- rev(intersect(candidates, tex_tfs))
+
+p1 <- bubble(t,log2(rna_seq+1)[t,rownames(group2)],Data_normed_3[t,rownames(group2)], text.size = 8)
+plot(p1)
 ```
 
 TFs that most active in TRM
 
-```{r, fig.width=4, fig.height=5}
-plot(bubble(tfs2[['TRM']],
-            log2(rna_seq+1)[tfs2[['TRM']],rownames(group2)],
-            Data_normed_3[tfs2[['TRM']],rownames(group2)]
-))
+```{r, fig.width=4.5, fig.height=6}
+# reorganize TFs by the p-value significance
+t <- rev(intersect(candidates, trm_tfs))
+
+p2 <- bubble(t,log2(rna_seq+1)[t,rownames(group2)],Data_normed_3[t,rownames(group2)], text.size = 8)
+plot(p2)
 ```
 
 TFs that active in TRM and TEXterm
 
-```{r, fig.width=4, fig.height=7}
-plot(bubble(common_tfs,
-            log2(rna_seq+1)[common_tfs,rownames(group2)],
-            Data_normed_3[common_tfs,rownames(group2)]
-))
+```{r, fig.width=4.5, fig.height=8}
+t <- rev(intersect(candidates, common_tfs))
+
+p3 <- bubble(t,log2(rna_seq+1)[t,rownames(group2)],Data_normed_3[t,rownames(group2)], text.size = 8)
+plot(p3)
+```
+
+```{r}
+## save to file
+pdf(paste0('bb_',length(tex_tfs),'_TEX_TFs.pdf'), width = 5, height=8)
+plot(p1)
+dev.off()
+
+pdf(paste0('bb_',length(trm_tfs),'_TRM_TFs.pdf'), width = 4.5, height=6)
+plot(p2)
+dev.off()
+
+pdf(paste0('bb_',length(common_tfs),'_common_TFs.pdf'), width = 4.5, height=8)
+plot(p3)
+dev.off()
+
 ```
 
 # session info
