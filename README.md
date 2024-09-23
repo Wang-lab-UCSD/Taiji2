@@ -47,7 +47,7 @@ Additionally, gene expression (normalized by TPM) file `expression_profile.tsv` 
 
 In addition to PageRank scores and gene expression matrices, group file with cell state annotation is also needed. Check the [demo group file](https://github.com/Wang-lab-UCSD/Taiji2/blob/main/figures/Fig1/group_file.txt) for example.
 
-Follow the [tutorial](https://rpubs.com/cong003/1201450) step by step. Required R packages are listed in the beginning. Alternatively, you can download the original [code](https://github.com/Wang-lab-UCSD/Taiji2/blob/main/figures/Fig1/Fig1_TF_activity_visual.Rmd) for further customization.
+Follow the [tutorial](https://rpubs.com/cong003/1223490) step by step. Required R packages are listed in the beginning. Alternatively, you can download the original [code](https://github.com/Wang-lab-UCSD/Taiji2/blob/main/figures/Fig1/Fig1_TF_activity_visual.Rmd) for further customization.
 
 #### TF transcriptional wave
 
