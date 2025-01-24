@@ -1,0 +1,4 @@
+TF freq type
+Nr4a3 2 oe
+Phox2b 2 oe
+Tlx2 2 oe

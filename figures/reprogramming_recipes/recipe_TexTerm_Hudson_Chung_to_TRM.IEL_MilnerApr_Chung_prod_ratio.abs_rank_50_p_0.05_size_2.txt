@@ -1,0 +1,6 @@
+TF freq type
+Tlx2 4 oe
+Phox2b 3 oe
+Fos 2 oe
+Jun 2 oe
+Jdp2 1 ko

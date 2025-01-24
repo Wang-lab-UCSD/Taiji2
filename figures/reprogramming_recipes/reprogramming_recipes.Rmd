@@ -1,0 +1,116 @@
+---
+title: "TF repgraomming recipes"
+author: "Cong"
+date: "2025-01-21"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    toc_collapsed: true
+    toc_depth: 3
+    number_sections: true
+    theme: lumen
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# import packages and functions
+
+```{r import packages and functions}
+set.seed(42)
+source('../../scripts/utils/getRecipes.R')
+
+```
+
+# set up recipe arguments
+```{r}
+s = c("TexTerm","TexTerm") # source cells
+t = c("TE", "TRM") # target cells
+
+recipe_size = 3
+rank_cut = 50
+p = 0.001
+group_sorted <- read.csv('../Fig1/group_file_for_heatmap.csv',header = T, row.names = 1)
+rna_seq <- read.csv('../Fig1/rna_expr_TFs.csv', row.names = 1)
+Data <- read.csv('../Fig1/pr_original.csv', row.names = 1)#### default scale
+
+```
+
+```{r}
+# test new reprogramming methods -------
+sources = rownames(group_sorted)[group_sorted$Group=='TexTerm']
+targets = rownames(group_sorted)[group_sorted$Group=='TRM']
+
+# keep TFs with expression level at top 50% in both targets and sources
+c1 <- names(sort(rowMeans(rna_seq[,targets]))[as.integer(0.5*nrow(rna_seq)):nrow(rna_seq)])
+c2 <- names(sort(rowMeans(rna_seq[,sources]))[as.integer(0.5*nrow(rna_seq)):nrow(rna_seq)])
+candidates <- intersect(c1, c2)
+```
+
+
+```{r}
+# 1. o.g. reprogramming recipe
+# getRecipes(soN ='TexTerm',taN ='TRM',rank_cut = 50, D = Data[candidates,], recipe_size = 2, p = 0.001)
+getRecipes(soN ='TexTerm',taN ='TRM',rank_cut = 50, D = Data, recipe_size = 2, p = 0.05)
+getRecipes(soN ='TexTerm',taN ='TE',rank_cut = 50, D = Data, recipe_size = 2, p = 0.05)
+
+```
+
+
+```{r}
+# 3. keep recipes with already tested KOs
+test_targets <- c('Zscan20', 'Jdp2','Zfp143','Zfp324','Arid3a','Irf8','Nfatc1','Prdm4','Foxd2','Zfp410','Tfdp1','Zbtb49','Etv5','Hinfp')
+df <- read.table('recipe_summary_TexTerm_to_TRM_prod_ratio.abs_50_p_0.001_size_2.txt', header = T) %>% 
+    filter(TF1_type=='ko'&TF2_type=='oe'|TF1_type=='oe'&TF2_type=='ko') %>% 
+  filter(TF1 %in% test_targets & TF1_type=='ko'|TF2 %in% test_targets & TF2_type=='ko')
+write.table(df, "filtered_recipe_TexTerm_to_TRM_prod_ratio.abs_50_p_0.001_size_2.txt", row.names = F, quote = F)
+
+df2 <- read.table('recipe_summary_TexTerm_to_TRM_prod_ratio.abs_50_p_0.05_size_2.txt', header = T) %>% 
+  filter(TF1_type=='ko'&TF2_type=='oe'|TF1_type=='oe'&TF2_type=='ko') %>% 
+  filter(TF1 %in% test_targets & TF1_type=='ko'|TF2 %in% test_targets & TF2_type=='ko')
+write.table(df2, "filtered_recipe_TexTerm_to_TRM_prod_ratio.abs_50_p_0.05_size_2.txt", row.names = F, quote = F)
+
+df_combined <- rbind(df, df2) %>% distinct()
+write.table(df_combined, "filtered_recipe_TexTerm_to_TRM_size_2.txt", row.names = F, quote = F)
+
+```
+
+# write the recipe summary to excel
+```{r}
+L <- list.files(pattern = paste0("recipe_summary.*_prod_ratio.abs_",rank_cut,".*"))
+sheets <- lapply(L, function(x) read.table(x, header = T))
+names(sheets) <- lapply(L, function(x) {sub(".*_summary_","",sub("_prod.*","",x))})
+write_xlsx(sheets, "repro_TF_summary_v2.xlsx")
+
+
+```
+
+
+```{r}
+mapply(function(x,y) getRecipes(x,y,rank_cut = rank_cut), s, t)
+
+read_plus <- function(flnm,nrow=n) {
+  read_delim(flnm, delim = " ")[1:nrow,c("TF","type")] %>% 
+    mutate(source = sub(".*/TF.*summary_", "", sub("_to.*.txt", "", flnm)),
+           target = sub(".*/TF.*to_", "", sub("_prod.*.txt", "", flnm)),
+           rank = c(1:nrow(.))) 
+}
+dt <- list.files(path="./", pattern = paste0("TF_freq_summary.*_prod_ratio.abs_rank_",rank_cut,".*"),recursive=T, full.names = T) %>% 
+  map_df(~read_plus(.,nrow = 20)) 
+lapply(seq(1,nrow(dt),20),function(x) diff_bubble(x, type=1, nrow = 19))
+write_xlsx(dt, "repro_TF_summary.xlsx")
+
+```
+
+
+
+# write the TF summary to excel
+L <- list.files(pattern = paste0("TF_freq_summary.*_prod_ratio.abs_rank_",rank_cut,".*"))
+sheets <- lapply(L, function(x) read.table(x, header = T))
+names(sheets) <- lapply(L, function(x) {sub(".*_summary_","",sub("_prod.*","",x))})
+write_xlsx(sheets, "repro_TF_summary_v2.xlsx")
+
+
