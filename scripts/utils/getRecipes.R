@@ -35,7 +35,11 @@ getRecipes <- function(soN, taN, recipe_size=3,
       return(df_2)
     }else{
       tmp <- as.data.frame(t(combn(rownames(df_2),recipe_size)))
-      tmp2 <- scale(apply(tmp,1,function(x) prod(df_2[x,"ratio.abs"])))
+      if (m=='ratio.abs'){
+        tmp2 <- scale(apply(tmp,1,function(x) prod(df_2[x,m])))
+      }else if (m=='diff.abs'){
+        tmp2 <- scale(apply(tmp,1,function(x) sum(df_2[x,m])))
+      }
       tmp$agg <- tmp2
       tmp$count <- 1
       tmp <- tmp[tmp$agg>=qnorm(1-p),]

@@ -39,23 +39,39 @@ Data <- read.csv('../Fig1/pr_original.csv', row.names = 1)#### default scale
 
 ```
 
+
+# pre-filter
+We want to curate a candidate list which should satisfy the following criteria:
+1. expression level larger than mean in both targets and sources
+2. variation of PageRank scores smaller than mean in both targets and sources 
 ```{r}
 # test new reprogramming methods -------
 sources = rownames(group_sorted)[group_sorted$Group=='TexTerm']
 targets = rownames(group_sorted)[group_sorted$Group=='TRM']
 
+# keep TFs with PageRank variation at bottom 50% in both targets and sources
+sd.pct <- 0.6 # larger, more loose cut-off
+c11 <- names(sort(apply(Data[,targets], MARGIN = 1, FUN = sd))[1:as.integer(sd.pct*nrow(Data))])
+c22 <- names(sort(apply(Data[,sources], MARGIN = 1, FUN = sd))[1:as.integer(sd.pct*nrow(Data))])
+candidates1 <- intersect(c11,c22)
+
 # keep TFs with expression level at top 50% in both targets and sources
-c1 <- names(sort(rowMeans(rna_seq[,targets]))[as.integer(0.5*nrow(rna_seq)):nrow(rna_seq)])
-c2 <- names(sort(rowMeans(rna_seq[,sources]))[as.integer(0.5*nrow(rna_seq)):nrow(rna_seq)])
-candidates <- intersect(c1, c2)
+mean.pct <- 0.5 # smaller, more loose cut-off
+c1 <- names(sort(rowMeans(rna_seq[,targets]))[as.integer(mean.pct*nrow(rna_seq)):nrow(rna_seq)])
+c2 <- names(sort(rowMeans(rna_seq[,sources]))[as.integer(mean.pct*nrow(rna_seq)):nrow(rna_seq)])
+candidates2 <- intersect(c1, c2)
+
+candidates <- intersect(candidates1, candidates2)
 ```
 
 
 ```{r}
 # 1. o.g. reprogramming recipe
-# getRecipes(soN ='TexTerm',taN ='TRM',rank_cut = 50, D = Data[candidates,], recipe_size = 2, p = 0.001)
-getRecipes(soN ='TexTerm',taN ='TRM',rank_cut = 50, D = Data, recipe_size = 2, p = 0.05)
-getRecipes(soN ='TexTerm',taN ='TE',rank_cut = 50, D = Data, recipe_size = 2, p = 0.05)
+getRecipes(soN ='TexTerm',taN ='TRM',rank_cut = 100, D = Data[candidates,], recipe_size = 3, p = 0.05, m = 'diff.abs')
+# getRecipes(soN ='TexTerm',taN ='TRM',rank_cut = 100, D = Data[candidates,], recipe_size = 3, p = 0.05)
+
+# getRecipes(soN ='TexTerm',taN ='TRM',rank_cut = 50, D = Data, recipe_size = 2, p = 0.05)
+# getRecipes(soN ='TexTerm',taN ='TE',rank_cut = 50, D = Data, recipe_size = 2, p = 0.05)
 
 ```
 
@@ -106,11 +122,14 @@ write_xlsx(dt, "repro_TF_summary.xlsx")
 ```
 
 
-
+```{r}
 # write the TF summary to excel
 L <- list.files(pattern = paste0("TF_freq_summary.*_prod_ratio.abs_rank_",rank_cut,".*"))
 sheets <- lapply(L, function(x) read.table(x, header = T))
 names(sheets) <- lapply(L, function(x) {sub(".*_summary_","",sub("_prod.*","",x))})
 write_xlsx(sheets, "repro_TF_summary_v2.xlsx")
+
+
+```
 
 
