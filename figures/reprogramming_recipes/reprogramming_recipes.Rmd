@@ -46,8 +46,12 @@ We want to curate a candidate list which should satisfy the following criteria:
 2. variation of PageRank scores smaller than mean in both targets and sources 
 ```{r}
 # test new reprogramming methods -------
-sources = rownames(group_sorted)[group_sorted$Group=='TexTerm']
-targets = rownames(group_sorted)[group_sorted$Group=='TRM']
+source_cell <- 'TexTerm'
+# target_cell <- 'TE'
+target_cell <- 'TRM'
+
+sources = rownames(group_sorted)[group_sorted$Group==source_cell]
+targets = rownames(group_sorted)[group_sorted$Group==target_cell]
 
 # keep TFs with PageRank variation at bottom 50% in both targets and sources
 sd.pct <- 0.6 # larger, more loose cut-off
@@ -56,10 +60,10 @@ c22 <- names(sort(apply(Data[,sources], MARGIN = 1, FUN = sd))[1:as.integer(sd.p
 candidates1 <- intersect(c11,c22)
 
 # keep TFs with expression level at top 50% in both targets and sources
-mean.pct <- 0.5 # smaller, more loose cut-off
+mean.pct <- 0.3 # smaller, more loose cut-off
 c1 <- names(sort(rowMeans(rna_seq[,targets]))[as.integer(mean.pct*nrow(rna_seq)):nrow(rna_seq)])
 c2 <- names(sort(rowMeans(rna_seq[,sources]))[as.integer(mean.pct*nrow(rna_seq)):nrow(rna_seq)])
-candidates2 <- intersect(c1, c2)
+candidates2 <- union(c1, c2)
 
 candidates <- intersect(candidates1, candidates2)
 ```
@@ -67,7 +71,7 @@ candidates <- intersect(candidates1, candidates2)
 
 ```{r}
 # 1. o.g. reprogramming recipe
-getRecipes(soN ='TexTerm',taN ='TRM',rank_cut = 100, D = Data[candidates,], recipe_size = 3, p = 0.05, m = 'diff.abs')
+getRecipes(soN =source_cell,taN =target_cell,rank_cut = 100, D = Data[candidates,], recipe_size = 3, p = 0.05, m = 'diff.abs')
 # getRecipes(soN ='TexTerm',taN ='TRM',rank_cut = 100, D = Data[candidates,], recipe_size = 3, p = 0.05)
 
 # getRecipes(soN ='TexTerm',taN ='TRM',rank_cut = 50, D = Data, recipe_size = 2, p = 0.05)
