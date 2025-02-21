@@ -79,6 +79,11 @@ getRecipes(soN =source_cell,taN =target_cell,rank_cut = 100, D = Data[candidates
 
 ```
 
+```{r}
+# 3. keep recipes with at least one repressor of repressor
+
+```
+
 
 ```{r}
 # 3. keep recipes with already tested KOs

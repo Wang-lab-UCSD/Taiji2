@@ -1,0 +1,29 @@
+---
+title: "get_repressor_of_repressor"
+output: html_document
+date: "2025-02-18"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This script is to find the repressor of repressors in TexTerm. Here's how to do that:
+1. find the genes which are highly expressed in TRM and lowly expressed in TexTerm, which are referred to as TRM functional genes
+2. find the repressor of the functional genes in TexTerm. The TF scope is within the perturb-seq targets in chronic infection
+
+```{r import data}
+rna_seq <- read.csv('rna_all.csv', row.names = 1)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
