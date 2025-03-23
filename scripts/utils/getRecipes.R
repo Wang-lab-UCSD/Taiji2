@@ -1,7 +1,7 @@
 getRecipes <- function(soN, taN, recipe_size=3,
                        rank_cut=20, p=0.001, 
                        method="prod",m="ratio.abs",
-                       g=group_sorted,D=Data, R=rna_seq){
+                       g=group_sorted,D=Data, R=rna_seq,top=T){
   
   sources = rownames(g)[g$Group==soN]
   targets = rownames(g)[g$Group==taN]
@@ -28,7 +28,11 @@ getRecipes <- function(soN, taN, recipe_size=3,
     
     df$ratio.abs = unlist(lapply(df$ratio, function(x) if(x<1){1/x}else{x}))
     rownames(df) = rownames(D)
-    df_2 = head(df[order(df[[m]],decreasing = TRUE),], n = rank_cut)
+    if (top){
+      df_2 = head(df[order(df[[m]],decreasing = TRUE),], n = rank_cut)
+    }else{
+      df_2 = tail(df[order(df[[m]],decreasing = TRUE),], n = rank_cut)
+    }
     
     if (recipe_size == 1){
       df_2$rank <- rep(1:nrow(df_2))

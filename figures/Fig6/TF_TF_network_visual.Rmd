@@ -27,8 +27,10 @@ suppressMessages(library(RColorBrewer))
 
 # load two networks first
 ```{r}
-g1 <- readRDS('graph_shrinkage_res0.9_s0.15_TexTerm_subset_TFs_v2.rds')
-g2 <- readRDS('graph_shrinkage_res0.9_s0.15_TRM_subset_TFs_v2.rds')
+g1 <- readRDS('graph_shrinkage_res0.9_s0.15_TexTerm_subset_TFs_v3.rds')
+g2 <- readRDS('graph_shrinkage_res0.9_s0.15_TRM_subset_TFs_v3.rds')
+# g1 <- readRDS('graph_shrinkage_res0.9_s0.15_TexTerm__subset_TFs_v2.rds')
+# g2 <- readRDS('graph_shrinkage_res0.9_s0.15_TRM__subset_TFs_v2.rds')
 gv1 <- igraph::as_data_frame(g1, "vertices")
 gv2 <- igraph::as_data_frame(g2, "vertices")
 
@@ -134,10 +136,91 @@ get_figure <- function(x,ge,cut_off=0.8,label=F){
 ```
 
 ## generate figures
-```{r, fig.width=8, fig.height=8}
+```{r, fig.width=10, fig.height=10}
 tmps <- lapply(c('common','trm','tex'), function(x) get_figure(x=x, ge=ge, cut_off=0.8,label=T))
 
 ```
+
+## show sub-network centering on a few TFs
+We want to highlight several TFs in the network: Only edges related to selected TFs will be shown
+```{r}
+tf_list = c('Jun','Batf','Batf3','Tfap4')
+# tf_list = c('Jun','Batf')
+
+get_figure <- function(x, ge, cut_off=0.8, label=F, tf_list=NULL){
+    g <- graph_from_data_frame(ge, directed = FALSE, vertices = attrs2)
+    G_Grouped = g
+    E(G_Grouped)$weight = 1
+    
+    ## Add edges with high weight between all nodes in the same group
+    for(i in unique(V(g)$cluster_c)) {
+        GroupV = which(V(g)$cluster_c == i)
+        G_Grouped = add_edges(G_Grouped, combn(GroupV, 2), attr=list(weight=1.8))
+    } 
+    
+    ## Now create a layout based on G_Grouped
+    set.seed(567)
+    LO = layout_with_fr(G_Grouped)
+    
+    # get degree
+    ge2 <- ge |> dplyr::filter(type==x)
+    g2 <- graph_from_data_frame(ge2, directed = FALSE, vertices = attrs2)
+    
+    # generate label for all nodes
+    V(g)$frame.color <- 'gray'
+    V(g)$label <- NA
+    if (label){V(g)$label <- V(g)$name}
+    
+    V(g)$label.color <- 'black'
+    V(g)$size <- 0.2*degree(g2)
+    V(g)$label.cex <- 0.5
+    
+    # set distance of label
+    V(g)$label.dist <- 0.4
+    
+    # set edge color
+    E(g)$color <- ifelse(E(g)$type=='common', '#C0C0C0', ifelse(E(g)$type=='trm', '#009051', '#945200'))
+    E(g)$size <- 0.1
+    E(g)$width <- 2*E(g)$corr
+    E(g)$lty <- ifelse((E(g)$corr>=unname(quantile(E(g)$corr, cut_off))) & (E(g)$type==x), 1, 0)
+
+    # Highlight TFs and show only related edges
+    if (!is.null(tf_list)) {
+        # Highlight TFs
+        # V(g)$color <- ifelse(V(g)$name %in% tf_list, "red", "lightblue")
+        # V(g)$frame.color <- ifelse(V(g)$name %in% tf_list, "red", "gray")
+        
+        # Filter edges related to TFs
+        edge_list <- as_edgelist(g)
+        keep_edges <- which(edge_list[,1] %in% tf_list | edge_list[,2] %in% tf_list)
+        
+        # Set visibility of edges
+        E(g)$visible <- FALSE
+        E(g)$visible[keep_edges] <- TRUE
+        # E(g)$lty <- ifelse(E(g)$visible, 1, 0)
+        E(g)$lty <- ifelse((E(g)$corr>=unname(quantile(E(g)$corr, cut_off))) & (E(g)$type==x) & (E(g)$visible), 1, 0)
+
+        # Find nodes connected to TFs
+        connected_nodes <- unique(c(edge_list[keep_edges,1], edge_list[keep_edges,2]))
+        
+        # Show labels for TFs and connected nodes
+        V(g)$label <- ifelse(V(g)$name %in% connected_nodes, V(g)$name, NA)
+    }
+
+    pdf(paste0(x,'_cutoff_',cut_off,'.pdf'), width = 10, height = 10)
+    # Plot only visible edges
+    plot(g, edge.visible=E(g)$visible, layout=LO, main = paste0(x, ' network'))
+    dev.off()
+}
+
+```
+
+```{r, fig.width=8, fig.height=8}
+tmps <- lapply(c('common','trm','tex'), function(x) get_figure(x=x, ge=ge, cut_off=0, label=T, tf_list = tf_list))
+
+# tmps <- lapply(c('common','trm','tex'), function(x) get_figure(x=x, ge=ge, cut_off=0.8, label=T))
+```
+
 
 # individual TF's neighbors in different contexts
 ```{r}
@@ -180,7 +263,9 @@ get_graph <- function(id){
     LO = layout_with_fr(G_Grouped)    
     
     set.seed(1)
+    pdf(paste0(id,'.pdf'), width = 8, height = 8)
     plot(g, layout=LO, main = paste0(id, ' network'))
+    dev.off()
 
 }
 
@@ -189,9 +274,9 @@ get_graph <- function(id){
 Now we can visualize some TFs' neighbors in both TRM and TEXterm. Hic1 is a common TF in both contexts. Zfp324 is TEXterm-specific TF. Fosb is TRM-specific TF. 
 ```{r, fig.width=6, fig.height=6}
 # visualize some example TFs
-tmp <- lapply(c('Hic1','Fosb','Zfp324'), get_graph)
-
-
+# ßtmp <- lapply(c('Hic1','Fosb','Zfp324'), get_graph)
+# tmp <- lapply(c('Jun','Batf'), get_graph)
+tmp <- lapply(tf_list, get_graph)
 ```
 
 # TF-regulatee network 

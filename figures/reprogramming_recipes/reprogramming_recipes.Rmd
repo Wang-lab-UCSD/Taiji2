@@ -71,7 +71,8 @@ candidates <- intersect(candidates1, candidates2)
 
 ```{r}
 # 1. o.g. reprogramming recipe
-getRecipes(soN =source_cell,taN =target_cell,rank_cut = 100, D = Data[candidates,], recipe_size = 3, p = 0.05, m = 'diff.abs')
+# getRecipes(soN =source_cell,taN =target_cell,rank_cut = 100, D = Data[candidates,], recipe_size = 3, p = 0.05, m = 'diff.abs')
+getRecipes(soN =source_cell,taN =target_cell,rank_cut = 20, D = Data[candidates,], recipe_size = 3, p = 0.05, m = 'diff.abs', top = F)
 # getRecipes(soN ='TexTerm',taN ='TRM',rank_cut = 100, D = Data[candidates,], recipe_size = 3, p = 0.05)
 
 # getRecipes(soN ='TexTerm',taN ='TRM',rank_cut = 50, D = Data, recipe_size = 2, p = 0.05)
