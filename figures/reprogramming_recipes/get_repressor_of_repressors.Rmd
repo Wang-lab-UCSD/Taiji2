@@ -14,16 +14,39 @@ This script is to find the repressor of repressors in TexTerm. Here's how to do 
 1. find the genes which are highly expressed in TRM and lowly expressed in TexTerm, which are referred to as TRM functional genes
 2. find the repressor of the functional genes in TexTerm. The TF scope is within the perturb-seq targets in chronic infection
 
+## import data
 ```{r import data}
 rna_seq <- read.csv('rna_all.csv', row.names = 1)
+group_sorted <- read.csv('../Fig1/group_file_for_heatmap.csv',header = T, row.names = 1)
 ```
 
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
+## identify TRM functional genes
+```{r identify TRM functional genes}
+# manually select background samples
+group2 <- group_sorted[grepl("TRM|TexTerm",group_sorted$Group),]
+x <- "TRM"
+pr <- rna_seq[,rownames(group2)]
+n <- which(group2[["Group"]]==x)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+```{r identify TRM functional genes}
+fl.sources <- list.files("../../scripts/utils/", full.names = T)
+tmp <- sapply(fl.sources,source)
+x <- unpairedtTest(pr,n,p=0.05,d=0.5)
+tfs <- rownames(x)
+```
+
+
+```{r identify TRM functional genes}
+writeLines(tfs, 'TRM_functional_genes_p0.05_d0.5.txt')
+```
+
+## identify repressor of the TRM functional genes
+Expression of more than half of the TRM functional genes are reduced in knock-out TFs are identified as repressor. We'll use the perturb-seq seurat object in chronic infection as the main data
+```{r identify rep}
+
+```
+
+
+

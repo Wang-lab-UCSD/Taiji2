@@ -122,7 +122,6 @@ rna_seq <- read.csv('rna_expr_TFs.csv', row.names = 1)
 ```
 
 ```{r}
-n <- which(group_sorted[["Group"]]=="TexTerm")
 # identification
 tfs <- lapply(unique(group_sorted$Group),
             function(x) {
