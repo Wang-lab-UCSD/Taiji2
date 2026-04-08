@@ -1,0 +1,163 @@
+---
+title: "comparison between two clustering methods"
+author: "Cong"
+date: "2025-12-16"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    toc_collapsed: true
+    toc_depth: 3
+    number_sections: true
+    theme: lumen
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# import packages and functions
+
+```{r import packages and functions}
+suppressMessages(library(mclust))
+suppressMessages(library(ggplot2))
+suppressMessages(library(dplyr))
+suppressMessages(library(ggalluvial))
+suppressMessages(library(tidyr))
+```
+
+# data loading
+
+-   clustering 1: main manuscript clustering is based on correlation of correlation, "neighbor of neighbors"
+-   clustering 2: more standard clustering based on correlation
+
+```{r}
+set.seed(123)
+sample <- 'TexTerm' ### 'TRM' or 'TexTerm'
+tag <- '_subset_TFs_v2'
+df_old <- read.csv(paste0("clustering_membership_copula_",sample,"_shrinkage_res0.9_s0.15",tag,".csv"))
+df_new <- read.csv(paste0("clustering_membership_copula_",sample,"_shrinkage_res1.1_s0.15",tag,".csv"))
+
+```
+
+
+# preprocessing & filtering
+
+We merged two clustering into a single dataframe and removed the standalone clusters.
+
+```{r}
+# Merge the two results by TF name
+# We suffix columns with _old and _new
+df_compare <- inner_join(df_old, df_new, by = c("name", "group"), suffix = c("_old", "_new"))
+
+# Function to identify clusters of size 1 (Standalone)
+get_singleton_clusters <- function(cluster_vec) {
+  counts <- table(cluster_vec)
+  names(counts)[counts == 1]
+}
+
+# Identify singleton clusters in both methods
+singletons_old <- get_singleton_clusters(df_compare$cluster_old)
+singletons_new <- get_singleton_clusters(df_compare$cluster_new)
+
+# Filter: Exclude TFs that belong to a singleton cluster in EITHER method
+df_clean <- df_compare %>%
+  filter(!cluster_old %in% singletons_old,
+         !cluster_new %in% singletons_new)
+
+cat("TFs remaining after removing standalone clusters:", nrow(df_clean), "\n")
+```
+
+We manually checked some important genes, 6/8 remained stable clustering.
+```{r}
+tmp <- c("Zscan20","Jdp2","Zfp324","Irf8","Hic1","Prdm1","Gfi1","Fli1")
+
+knitr::kable(df_clean[df_clean$name %in% tmp,], caption = 'clustering comparison on key TFs') |> kableExtra::kable_styling(latex_options = 'scale_down')
+
+```
+
+# global comparison (level 1)
+
+We compared the global clustering assignment regardless of TF group
+```{r}
+# A. Quantitative Metric: Adjusted Rand Index (ARI)
+# ARI = 1.0 means perfect match. ARI ~ 0 means random chance.
+global_ari <- adjustedRandIndex(df_clean$cluster_old, df_clean$cluster_new)
+cat("Global Adjusted Rand Index (ARI):", round(global_ari, 3), "\n")
+
+# B. Visualization: Confusion Matrix Heatmap
+# This shows: "Did TFs in Old Cluster 1 move to New Cluster 3?"
+confusion_mat <- df_clean %>%
+  count(cluster_old, cluster_new)
+
+p1 <- ggplot(confusion_mat, aes(x = factor(cluster_new), y = factor(cluster_old), fill = n)) +
+  geom_tile() +
+  geom_text(aes(label = n), color = "white") +
+  scale_fill_viridis_c() +
+  labs(title = paste0("Global Cluster Comparison (ARI = ", round(global_ari, 3), ")"),
+       x = "New Method Clusters",
+       y = "Old Method Clusters",
+       fill = "# TFs") +
+  theme_minimal()
+
+print(p1)
+
+```
+
+# group-wise comparison (level 2)
+
+We compared the clustering within each TF group
+```{r}
+# A. Calculate ARI per TF Group
+group_metrics <- df_clean %>%
+  group_by(group) %>%
+  summarise(
+    n_tfs = n(),
+    group_ari = adjustedRandIndex(cluster_old, cluster_new)
+  )
+
+print(group_metrics)
+```
+
+Tex_important and Tex_specific groups remained highly stable.
+```{r}
+# B. Visualization: Bar Chart of Stability per Group
+p2 <- ggplot(group_metrics, aes(x = reorder(group, group_ari), y = group_ari, fill = group)) +
+  geom_col(show.legend = FALSE) +
+  coord_flip() +
+  ylim(0, 1) +
+  labs(title = "Cluster Stability by TF Group",
+       subtitle = "Higher ARI = Clusters remained more consistent within this group",
+       y = "Adjusted Rand Index (Agreement)",
+       x = "TF Group") +
+  theme_classic()
+
+print(p2)  
+  
+```
+
+If you see straight ribbons flowing from Left to Right, the clusters are stable. If the ribbons criss-cross violently, the TFs were reassigned.
+
+```{r}
+# C. Visualization: Detailed Flow (Alluvial Plot) per Group
+p3 <- ggplot(df_clean,
+       aes(axis1 = factor(cluster_old), axis2 = factor(cluster_new))) +
+  geom_alluvium(aes(fill = group), width = 1/12) +
+  geom_stratum(width = 1/12, fill = "grey80", color = "grey") +
+  geom_label(stat = "stratum", aes(label = after_stat(stratum))) +
+  scale_x_discrete(limits = c("Old Clusters", "New Clusters"), expand = c(.05, .05)) +
+  scale_fill_brewer(palette = "Set1") +
+  labs(title = "TF Cluster Flow: Old vs New",
+       subtitle = "Colored by Biological Group") +
+  theme_minimal() +
+  facet_wrap(~group, scales = "free") # Facet by group to see individual alignments
+
+print(p3)
+```
+
+
+# session info
+
+```{r }
+sessionInfo()
+```

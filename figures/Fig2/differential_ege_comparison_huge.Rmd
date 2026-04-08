@@ -1,0 +1,171 @@
+---
+title: "visualization of context-dependent TF-TF cooperation network"
+author: "Cong"
+date: "2025-12-18"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    toc_collapsed: true
+    toc_depth: 3
+    number_sections: true
+    theme: lumen
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# import packages and functions
+```{r import packages and functions}
+suppressMessages(library(igraph))
+suppressMessages(library(ggplot2))
+suppressMessages(library(dplyr))
+suppressMessages(library(RColorBrewer))
+
+```
+
+# load two networks first
+```{r}
+g1 <- readRDS('graph_shrinkage_res1.1_s0.15_TexTerm__subset_TFs_v2.rds')
+g2 <- readRDS('graph_shrinkage_res1.1_s0.15_TRM__subset_TFs_v2.rds')
+gv1 <- igraph::as_data_frame(g1, "vertices")
+gv2 <- igraph::as_data_frame(g2, "vertices")
+
+common_tfs <- intersect(gv1$name, gv2$name)
+tex_tfs <- setdiff(gv1$name, gv2$name)
+trm_tfs <- setdiff(gv2$name, gv1$name)
+
+```
+
+# combine two networks
+Prepare the edge info
+```{r}
+# extract edge info: take mean if edge exists in both networks
+ge1 <- igraph::as_data_frame(g1) %>% select(from, to, corr) %>% transform(from=pmin(from, to), to=pmax(from,to))
+ge2 <- igraph::as_data_frame(g2) %>% select(from, to, corr) %>% transform(from=pmin(from, to), to=pmax(from,to))
+ge <- ge1 %>% full_join(ge2, by = c('from','to')) %>% 
+    mutate(corr=ifelse(is.na(corr.x), corr.y, ifelse(is.na(corr.y), corr.x, (corr.x+corr.y)/2)),
+           edge.color=ifelse(is.na(corr.x), '#009051', ifelse(is.na(corr.y), '#8AAA75', '#808080')),
+           type=ifelse(is.na(corr.x), 'trm', ifelse(is.na(corr.y), 'tex', 'common'))) |> 
+        select(from,to,corr,edge.color,type) |> na.omit()
+print(knitr::kable(head(ge), caption = 'edge meta') |> kableExtra::kable_styling(latex_options = 'scale_down'))
+print(dim(ge))
+
+```
+
+# ==============================================================================
+# PART 2: Load OLD Implementation Results for Comparison
+# ==============================================================================
+
+```{r}
+old_tex_file <- "graph_shrinkage_res0.9_s0.15_TexTerm__subset_TFs_v2.rds"
+old_trm_file <- "graph_shrinkage_res0.9_s0.15_TRM__subset_TFs_v2.rds"
+
+# Function to read old CSVs and standardize edge direction (from < to)
+process_old_edges <- function(filepath) {
+  g1 <- readRDS(filepath)
+  gv1 <- igraph::as_data_frame(g1, "vertices")
+  ge1 <- igraph::as_data_frame(g1) %>% select(from, to, corr) %>% transform(from=pmin(from, to), to=pmax(from,to))
+  return(ge1)
+}
+
+# Load and process
+df_old_tex <- process_old_edges(old_tex_file)
+df_old_trm <- process_old_edges(old_trm_file)
+
+# Combine Old Tex and TRM to define specificity types
+ge_old <- df_old_tex %>% full_join(df_old_trm, by = c('from','to')) %>% 
+    mutate(corr=ifelse(is.na(corr.x), corr.y, ifelse(is.na(corr.y), corr.x, (corr.x+corr.y)/2)),
+           edge.color=ifelse(is.na(corr.x), '#009051', ifelse(is.na(corr.y), '#8AAA75', '#808080')),
+           type=ifelse(is.na(corr.x), 'trm', ifelse(is.na(corr.y), 'tex', 'common'))) |> 
+        select(from,to,corr,edge.color,type) |> na.omit()
+print(knitr::kable(head(ge_old), caption = 'edge meta') |> kableExtra::kable_styling(latex_options = 'scale_down'))
+print(dim(ge_old))
+
+```
+
+# ==============================================================================
+# PART 3: Compare Edge Specificity (New vs Old)
+# ==============================================================================
+```{r}
+# 1. Merge the two dataframes to align edges
+# We use full_join because some edges might exist in Old but dropped in New (or vice versa)
+edge_comparison <- full_join(
+  ge %>% select(from, to, type) %>% rename(type_new = type),
+  ge_old %>% select(from, to, type) %>% rename(type_old = type),
+  by = c("from", "to")
+)
+
+# 2. Handle missing edges (Edges present in one but not the other)
+# Replace NA with "Absent" to track dropped/gained edges explicitly
+edge_comparison <- edge_comparison %>%
+  mutate(
+    type_new = ifelse(is.na(type_new), "Absent", type_new),
+    type_old = ifelse(is.na(type_old), "Absent", type_old)
+  )
+
+# 3. Calculate Confusion Matrix Stats
+confusion_stats <- edge_comparison %>%
+  count(type_old, type_new) %>%
+  group_by(type_old) %>%
+  mutate(
+    total_in_old_category = sum(n),
+    percent = (n / total_in_old_category) * 100
+  ) %>%
+  ungroup()
+
+# Print quantitative check for Tex-specific robustness
+tex_conservation <- confusion_stats %>% 
+  filter(type_old == "tex", type_new == "tex") %>% 
+  pull(percent)
+
+print(paste0("Robustness of Tex-specific edges: ", round(tex_conservation, 1), "% of edges identified as Tex-specific in the old method are still Tex-specific in the new method."))
+
+
+# 4. Visualization: Confusion Heatmap
+# Logic: X-axis is the "Old Truth" (Previous Method), Y-axis is the "New Outcome".
+# The diagonal represents conserved specificity.
+
+# Define custom order for axes for clarity
+type_levels <- c("tex", "trm", "common", "Absent")
+
+p_robustness <- ggplot(confusion_stats, aes(x = factor(type_old, levels = type_levels), 
+                                            y = factor(type_new, levels = type_levels), 
+                                            fill = n)) +
+  geom_tile(color = "white") +
+  geom_text(aes(label = n), color = "black", size = 3.5, vjust = -0.5) + # Raw Count
+  geom_text(aes(label = paste0("(", round(percent, 1), "%)")), 
+            color = "black", size = 2.5, vjust = 1.5, alpha = 0.7) + # Percentage
+  scale_fill_gradient(low = "#F0F0F0", high = "#4E79A7", trans = "log1p") + # Log scale helps visualize large differences
+  labs(
+    title = "Robustness of Edge Specificity (Old vs. New Implementation)",
+    subtitle = "Percentage indicates how 'Old' edges were reclassified in the 'New' method",
+    x = "Edge Type (Old Method)",
+    y = "Edge Type (New Method)",
+    fill = "# Edges"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text = element_text(size = 11, face = "bold"),
+    panel.grid = element_blank()
+  )
+
+print(p_robustness)
+
+# 5. Optional: Save the discrepancies for inspection
+# If you want to check which Tex edges were lost
+lost_tex_edges <- edge_comparison %>%
+  filter(type_old == "tex", type_new == "Absent")
+
+head(lost_tex_edges)
+```
+
+
+
+
+# session info
+```{r }
+sessionInfo()
+```
+
